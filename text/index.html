@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+  <link
+  rel="icon"
+  type="image/png"
+  href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABS0lEQVRYR+2XwUoCURSGR0vcCgX5CO59CheBLxAF4SrCpZAVgrgIxNoUVFvfoBcIeoHC9oGbdBmtTNC+H67gpvTMNN6EufAxM8yc8//3nBnu3FQQBCk4gSPIu2sOsY0pmQdwAy2Jn0IzNrnfE5/JwLubuQ8PAxmYrKDsP01uKgPqibeRGEgqsIYV+GPL9nQdvtgcVOEz+tdrM7CB4AOU4A324SmaCZsBaSlCy9YFZKEN5/AVzojdwEynwEkXivAMe/BqNxHegLQy0IAajKEOV6DVZckRzYBEKnAJm64VaslKDOwgdA+70HMteFly2nOPhatAmQy3sO1mr9KP7OKKsBnQ03dwCH04gMdwwrMomwFFqd9bcAwf0cTtFVBE2vaSLbJor8CijMb7iYGkAv+iAt43Jt63Zt43p3oPtJzoP0drnK7jHNoKDuEaWt87DknNX2GRnwAAABBkZUJHNzlBRDdFQjFGRjY1NTI4NVhXA3EAAAAASUVORK5CYII=">
+
+  <title>.Txt</title>
+  <style>
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #222222;
+      --placeholder-color: #888888;
+    }
+    body.dark {
+      --bg-color: #1e1e1e;
+      --text-color: #eeeeee;
+      --placeholder-color: #888888;
+    }
+
+    body {
+      margin: 0;
+      font-family: Georgia, serif;
+      background: var(--bg-color);
+      color: var(--text-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .editor-container {
+      position: relative;
+      width: 80%;
+      height: 70%;
+    }
+
+    #editor {
+      width: 100%;
+      height: 100%;
+      padding: 20px;
+      border-radius: 10px;
+      background: var(--bg-color);
+      color: var(--text-color);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+      outline: none;
+      overflow-y: auto;
+      line-height: 1.5;
+      font-size: 18px;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    #editor:empty::before {
+      content: attr(data-placeholder);
+      color: var(--placeholder-color);
+    }
+
+    #toggleBtn {
+      position: absolute;
+      top: -50px; /* vertical padding above editor */
+      left: 0; /* align left with editor */
+      width: 40px;
+      height: 40px;
+      border: none;
+      border-radius: 8px;
+      background: var(--text-color);
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <div class="editor-container">
+    <button id="toggleBtn"></button>
+    <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing here..."></div>
+  </div>
+
+  <script>
+    const toggleBtn = document.getElementById('toggleBtn');
+
+    toggleBtn.onclick = () => {
+      document.body.classList.toggle('dark');
+    };
+  </script>
+</body>
+</html>
