@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>contact | tako</title>
+
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --bg: #0a0f14;
+    --card: #111821;
+    --text: #d6e2f0;
+    --accent: #00ffc3;
+    --muted: #5c6b7a;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "JetBrains Mono", monospace;
+    background: var(--bg);
+    color: var(--text);
+}
+
+header {
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+nav a {
+    text-decoration: none;
+    color: var(--muted);
+    margin-left: 1.5rem;
+}
+
+nav a:hover {
+    color: var(--accent);
+}
+
+.container {
+    max-width: 700px;
+    margin: 6rem auto;
+    padding: 0 2rem;
+}
+
+.card {
+    background: var(--card);
+    padding: 2.5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,255,195,0.08);
+}
+
+h1 {
+    margin-bottom: 2rem;
+}
+
+.contact-item {
+    margin-bottom: 1.5rem;
+}
+
+.label {
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.value {
+    font-size: 1rem;
+    margin-top: 0.3rem;
+}
+
+.value a {
+    color: var(--accent);
+    text-decoration: none;
+}
+
+.value a:hover {
+    text-decoration: underline;
+}
+
+footer {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>tako</div>
+    <nav>
+        <a href="index.html">home</a>
+        <a href="#">contact</a>
+    </nav>
+</header>
+
+<div class="container">
+    <div class="card">
+        <h1>contact()</h1>
+
+        <div class="contact-item">
+            <div class="label">email</div>
+            <div class="value">
+                <a href="mailto:youremail@example.com">youremail@example.com</a>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="label">github</div>
+            <div class="value">
+                <a href="https://github.com/yourusername" target="_blank">
+                    github.com/yourusername
+                </a>
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="label">discord</div>
+            <div class="value">
+                yourusername#0000
+            </div>
+        </div>
+
+        <div class="contact-item">
+            <div class="label">pgp</div>
+            <div class="value">
+                0xDEADBEEFCAFEBABE
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    minimal surface area.
+</footer>
+
+</body>
+</html>
