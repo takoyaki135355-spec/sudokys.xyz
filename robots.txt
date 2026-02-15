@@ -1,1 +1,19 @@
-#robots
+User-agent: *
+Disallow: /admin
+
+
+#robots died here 💀
+#
+#            Why we meet again adventurer,
+#          though navigating to /robots.txt is no large feat,
+#          it may be one that requires celebration.
+#            As with any celebration, there must come gifts,
+#          and as with this celebration we bring you - though in part - a flag
+#          a flag so great,
+#          a flag so strong,
+#          a flag so needed,
+#          a flag so powerfull,
+#          a flag commanding respect,
+#          a flag which in part,
+#          the part for which be second,
+#          C3cKK_5u
