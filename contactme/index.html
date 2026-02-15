@@ -85,12 +85,6 @@ h1 {
     text-decoration: underline;
 }
 
-footer {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-}
 .pgp-button {
     display: inline-block;
     padding: 0.6rem 1.2rem;
@@ -103,11 +97,24 @@ footer {
     transition: opacity 0.2s ease;
 }
 
-.pgp-button:hover {
-    opacity: 0.85;
+/* Override the .value a rule specifically for the button */
+.value a.pgp-button {
+    color: #000;
 }
 
+.pgp-button:hover {
+    opacity: 0.85;
+    text-decoration: none;
+}
+
+footer {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
 </style>
+
 </head>
 
 <body>
