@@ -91,6 +91,22 @@ footer {
     color: var(--muted);
     font-size: 0.9rem;
 }
+.pgp-button {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    background: var(--accent);
+    color: #000;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: opacity 0.2s ease;
+}
+
+.pgp-button:hover {
+    opacity: 0.85;
+}
+
 </style>
 </head>
 
@@ -141,6 +157,18 @@ footer {
             <div class="value">
                 FINGERPRINT: 6530 59AF A1DE F4B7 5FFD 3425 986E 3B33 5666 A15E
             </div>
+            <div class="contact-item">
+    <div class="label">pgp</div>
+    <div class="value">
+        FINGERPRINT: 6530 59AF A1DE F4B7 5FFD 3425 986E 3B33 5666 A15E
+        <div style="margin-top: 1rem;">
+            <a href="./publickey.asc" download class="pgp-button">
+                Download PGP
+            </a>
+        </div>
+    </div>
+</div>
+
         </div>
 
     </div>
