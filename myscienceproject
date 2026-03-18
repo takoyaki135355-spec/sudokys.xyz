@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>REFRACT</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    background: #060b14;
+    font-family: 'Courier New', Courier, monospace;
+    user-select: none; -webkit-user-select: none;
+  }
+  #c { position: fixed; inset: 0; display: block; }
+
+  #hud {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 22px 30px; pointer-events: none;
+  }
+  #lv {
+    color: rgba(255,255,255,.18);
+    font-size: 10px; letter-spacing: 6px;
+  }
+  #rb {
+    pointer-events: all; background: transparent;
+    border: 1px solid rgba(255,255,255,.1);
+    color: rgba(255,255,255,.18);
+    font-family: inherit; font-size: 10px; letter-spacing: 3px;
+    padding: 7px 18px; cursor: pointer;
+    transition: color .15s, border-color .15s;
+  }
+  #rb:hover { color: rgba(255,255,255,.55); border-color: rgba(255,255,255,.3); }
+
+  #wo {
+    position: fixed; inset: 0; z-index: 20;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .45s ease;
+  }
+  #wo.v { opacity: 1; }
+  #wt {
+    color: #00ffcc;
+    font-size: 36px; letter-spacing: 16px;
+    text-shadow: 0 0 22px #00ffcc, 0 0 55px rgba(0,255,200,.22);
+  }
+  #ws {
+    margin-top: 14px; font-size: 10px;
+    letter-spacing: 5px; color: rgba(255,255,255,.16);
+  }
+
+  #sig {
+    position: fixed; bottom: 18px; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,.06);
+    font-size: 9px; letter-spacing: 9px;
+    pointer-events: none; z-index: 5;
+  }
+
+  /* Hint text */
+  #hint {
+    position: fixed; bottom: 44px; left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255,255,255,.12);
+    font-size: 10px; letter-spacing: 3px;
+    pointer-events: none; z-index: 5;
+    transition: opacity 1s ease;
+  }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+
+<div id="hud">
+  <span id="lv">LEVEL 01</span>
+  <button id="rb">[ R ]  RESTART</button>
+</div>
+
+<div id="wo">
+  <div id="wt">TARGET HIT</div>
+  <div id="ws">LOADING NEXT LEVEL…</div>
+</div>
+
+<div id="sig">REFRACT</div>
+<div id="hint">CLICK MIRRORS TO ROTATE</div>
+
+<script>
+'use strict';
+
+// ═══════════════════════════════════════════
+//  CONSTANTS
+// ═══════════════════════════════════════════
+
+const CELL     = 72;
+const LASER_C  = '#00ffee';
+const WIN_C    = '#00ffaa';
+const MIRROR_C = '#3d8cff';
+const PI4      = Math.PI / 4;
+const LERP     = 0.14;
+
+const DIR_VEC = {
+  right:[  1,  0 ],
+  left: [ -1,  0 ],
+  up:   [  0, -1 ],
+  down: [  0,  1 ]
+};
+
+// rot 0 = "/" mirror  |  rot 1 = "\" mirror
+const BOUNCE = {
+  0: { right:'up',   left:'down',  up:'right', down:'left'  },
+  1: { right:'down', left:'up',    up:'left',  down:'right' }
+};
+
+// Canvas rotation angle that makes horizontal line look like / or \
+// rotate(-PI/4) → /   |   rotate(+PI/4) → \
+function mRad(rot) { return rot === 0 ? -PI4 : PI4; }
+
+// ═══════════════════════════════════════════
+//  LEVELS
+//  rot: 0="/", 1="\"   (starting orientation the player must fix)
+// ═══════════════════════════════════════════
+
+const LEVELS = [
+  {
+    // 1 — one mirror, figure out which way
+    cols:8, rows:6,
+    emitter:{ x:1, y:3, dir:'right' },
+    mirrors:[ {x:5, y:3, rot:1} ],
+    target:{ x:5, y:1 }
+  },
+  {
+    // 2 — two bounces, same column
+    cols:9, rows:7,
+    emitter:{ x:1, y:5, dir:'right' },
+    mirrors:[ {x:4,y:5,rot:1}, {x:4,y:2,rot:1} ],
+    target:{ x:7, y:2 }
+  },
+  {
+    // 3 — Z-path, three rotations
+    cols:9, rows:8,
+    emitter:{ x:1, y:5, dir:'right' },
+    mirrors:[ {x:3,y:5,rot:1}, {x:3,y:2,rot:1}, {x:7,y:2,rot:0} ],
+    target:{ x:7, y:5 }
+  },
+  {
+    // 4 — decoys, two useful mirrors hidden among four
+    cols:10, rows:8,
+    emitter:{ x:1, y:4, dir:'right' },
+    mirrors:[
+      {x:4,y:4,rot:1}, {x:4,y:1,rot:1},   // solution mirrors
+      {x:7,y:4,rot:1}, {x:7,y:6,rot:0}    // decoys
+    ],
+    target:{ x:8, y:1 }
+  },
+  {
+    // 5 — spiral, four bounces + one decoy
+    cols:9, rows:8,
+    emitter:{ x:4, y:0, dir:'down' },
+    mirrors:[
+      {x:4,y:6,rot:1}, {x:1,y:6,rot:0},   // needs / then \
+      {x:1,y:3,rot:1}, {x:7,y:3,rot:1},   // needs / ; already \ ✓
+      {x:6,y:6,rot:0}                       // decoy
+    ],
+    target:{ x:7, y:6 }
+  }
+];
+
+// ═══════════════════════════════════════════
+//  STATE
+// ═══════════════════════════════════════════
+
+const canvas   = document.getElementById('c');
+const ctx      = canvas.getContext('2d');
+
+let W, H, offX, offY;
+let lvIdx      = 0;
+let mirrors    = [];     // runtime objects with vis/tgt angles
+let laserPts   = [];     // [{gx,gy}]
+let laserHit   = false;
+let won        = false;
+let winTimer   = null;
+let hoveredM   = null;
+let particles  = [];
+let flashAlpha = 0;
+let dirty      = true;
+let lastTime   = null;
+let hintAlpha  = 1;
+let hintTimer  = null;
+
+// ═══════════════════════════════════════════
+//  LEVEL LOADER
+// ═══════════════════════════════════════════
+
+function loadLevel(idx) {
+  lvIdx = ((idx % LEVELS.length) + LEVELS.length) % LEVELS.length;
+  const lv = LEVELS[lvIdx];
+
+  mirrors = lv.mirrors.map(m => ({
+    gx: m.x, gy: m.y,
+    rot: m.rot,
+    vis: mRad(m.rot),
+    tgt: mRad(m.rot),
+    lit: false
+  }));
+
+  won = laserHit = false; laserPts = [];
+  document.getElementById('lv').textContent =
+    'LEVEL ' + String(lvIdx + 1).padStart(2, '0');
+  document.getElementById('wo').classList.remove('v');
+  if (winTimer) { clearTimeout(winTimer); winTimer = null; }
+
+  refreshDims();
+  castLaser();
+  dirty = true;
+}
+
+// ═══════════════════════════════════════════
+//  RAYCASTING
+// ═══════════════════════════════════════════
+
+function castLaser() {
+  const lv = LEVELS[lvIdx];
+  let { x:px, y:py, dir } = lv.emitter;
+  const pts = [{ gx:px, gy:py }];
+
+  for (const m of mirrors) m.lit = false;
+
+  for (let b = 0; b < 60; b++) {
+    const [dx, dy] = DIR_VEC[dir];
+    const nx = px + dx, ny = py + dy;
+
+    if (nx < 0 || nx >= lv.cols || ny < 0 || ny >= lv.rows) {
+      pts.push({ gx: nx, gy: ny }); break;
+    }
+    if (nx === lv.target.x && ny === lv.target.y) {
+      pts.push({ gx: nx, gy: ny });
+      laserPts = pts; laserHit = true;
+      if (!won) { won = true; onWin(); }
+      return;
+    }
+    const m = mirrors.find(m => m.gx === nx && m.gy === ny);
+    if (m) {
+      pts.push({ gx: nx, gy: ny });
+      m.lit = true;
+      dir = BOUNCE[m.rot][dir];
+      px = nx; py = ny; continue;
+    }
+    px = nx; py = ny;
+  }
+
+  laserPts = pts; laserHit = false;
+}
+
+function onWin() {
+  playWin(); spawnParticles(); flashAlpha = 0.18;
+  const isLast = lvIdx === LEVELS.length - 1;
+  document.getElementById('ws').textContent =
+    isLast ? 'ALL LEVELS COMPLETE…' : 'LOADING NEXT LEVEL…';
+  winTimer = setTimeout(() => {
+    document.getElementById('wo').classList.add('v');
+    winTimer = setTimeout(() => loadLevel(lvIdx + 1), 1800);
+  }, 340);
+}
+
+// ═══════════════════════════════════════════
+//  COORDINATE UTILS
+// ═══════════════════════════════════════════
+
+function gp(gx, gy) {
+  return [offX + gx * CELL + CELL * 0.5, offY + gy * CELL + CELL * 0.5];
+}
+
+function refreshDims() {
+  W = canvas.width; H = canvas.height;
+  const lv = LEVELS[lvIdx];
+  offX = Math.round((W - lv.cols * CELL) * 0.5);
+  offY = Math.round((H - lv.rows * CELL) * 0.5);
+}
+
+// ═══════════════════════════════════════════
+//  DRAW — BACKGROUND
+// ═══════════════════════════════════════════
+
+function drawBG() {
+  ctx.save();
+  ctx.fillStyle = '#060b14';
+  ctx.fillRect(0, 0, W, H);
+
+  const lv = LEVELS[lvIdx];
+
+  // Very faint grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 0.5;
+  for (let c = 0; c <= lv.cols; c++) {
+    ctx.beginPath();
+    ctx.moveTo(offX + c * CELL, offY);
+    ctx.lineTo(offX + c * CELL, offY + lv.rows * CELL);
+    ctx.stroke();
+  }
+  for (let r = 0; r <= lv.rows; r++) {
+    ctx.beginPath();
+    ctx.moveTo(offX, offY + r * CELL);
+    ctx.lineTo(offX + lv.cols * CELL, offY + r * CELL);
+    ctx.stroke();
+  }
+
+  // Grid intersection dots
+  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  for (let c = 0; c <= lv.cols; c++) {
+    for (let r = 0; r <= lv.rows; r++) {
+      ctx.beginPath();
+      ctx.arc(offX + c * CELL, offY + r * CELL, 1.4, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  DRAW — LASER
+// ═══════════════════════════════════════════
+
+function drawLaser() {
+  if (laserPts.length < 2) return;
+  ctx.save();
+  const col = laserHit ? WIN_C : LASER_C;
+  const pts = laserPts.map(p => gp(p.gx, p.gy));
+
+  // Multi-layer glow effect
+  const layers = [
+    { w: 28, a: 0.03 },
+    { w: 12, a: 0.10 },
+    { w:  4, a: 0.55 },
+    { w:  1.5, a: 1.0 }
+  ];
+
+  for (const lyr of layers) {
+    ctx.beginPath();
+    ctx.moveTo(pts[0][0], pts[0][1]);
+    for (let i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.strokeStyle = col;
+    ctx.lineWidth   = lyr.w;
+    ctx.globalAlpha = lyr.a;
+    ctx.lineCap  = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Radial glow node at each bounce point
+  for (let i = 1; i < pts.length - 1; i++) {
+    const [bx, by] = pts[i];
+    const g = ctx.createRadialGradient(bx, by, 0, bx, by, 18);
+    g.addColorStop(0, col + 'cc');
+    g.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.globalAlpha = 0.65;
+    ctx.beginPath();
+    ctx.arc(bx, by, 18, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+    ctx.globalAlpha = 1;
+  }
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  DRAW — EMITTER
+// ═══════════════════════════════════════════
+
+function drawEmitter() {
+  const lv = LEVELS[lvIdx];
+  const [px, py] = gp(lv.emitter.x, lv.emitter.y);
+  ctx.save();
+  ctx.translate(px, py);
+  const s = 15;
+
+  // Body box
+  rrect(-s, -s, s*2, s*2, 4);
+  ctx.fillStyle = '#0d1520';
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255,255,255,0.13)';
+  ctx.lineWidth = 1;
+  ctx.stroke();
+
+  // Corner bracket accents
+  const b = 6;
+  ctx.strokeStyle = LASER_C + '44';
+  ctx.lineWidth = 1.5;
+  [ [-s,-s,1,1], [s,-s,-1,1], [s,s,-1,-1], [-s,s,1,-1] ].forEach(([x,y,sx,sy]) => {
+    ctx.beginPath();
+    ctx.moveTo(x, y + sy * b);
+    ctx.lineTo(x, y);
+    ctx.lineTo(x + sx * b, y);
+    ctx.stroke();
+  });
+
+  // Nozzle line pointing in fire direction
+  const [dx, dy] = DIR_VEC[lv.emitter.dir];
+  ctx.strokeStyle = LASER_C;
+  ctx.lineWidth = 1.5;
+  ctx.globalAlpha = 0.65;
+  ctx.beginPath();
+  ctx.moveTo(dx * (s - 2), dy * (s - 2));
+  ctx.lineTo(dx * (s + 13), dy * (s + 13));
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+
+  // Nozzle tip glow dot
+  const tx = dx * (s + 13), ty = dy * (s + 13);
+  const ng = ctx.createRadialGradient(tx, ty, 0, tx, ty, 9);
+  ng.addColorStop(0, LASER_C + 'bb');
+  ng.addColorStop(1, 'transparent');
+  ctx.beginPath();
+  ctx.arc(tx, ty, 9, 0, Math.PI * 2);
+  ctx.fillStyle = ng;
+  ctx.fill();
+
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  DRAW — MIRRORS
+// ═══════════════════════════════════════════
+
+function drawMirrors() {
+  for (const m of mirrors) {
+    const [px, py] = gp(m.gx, m.gy);
+    const isHov = m === hoveredM && !won;
+    const col   = isHov ? '#77bbff' : (m.lit ? '#55aaee' : MIRROR_C);
+    const len   = 21;
+
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(m.vis);
+
+    // Hover glow bg
+    if (isHov) {
+      const hg = ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
+      hg.addColorStop(0, 'rgba(68,140,255,0.09)');
+      hg.addColorStop(1, 'transparent');
+      ctx.beginPath();
+      ctx.arc(0, 0, 30, 0, Math.PI * 2);
+      ctx.fillStyle = hg;
+      ctx.fill();
+    }
+
+    // Backing hatch (non-reflective side indicator)
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth = 1;
+    for (let t = -len + 5; t <= len; t += 9) {
+      ctx.beginPath();
+      ctx.moveTo(t, 0);
+      ctx.lineTo(t - 5, 7);
+      ctx.stroke();
+    }
+
+    // Main surface line with glow
+    ctx.shadowBlur  = isHov ? 20 : (m.lit ? 14 : 7);
+    ctx.shadowColor = col;
+    ctx.strokeStyle = col;
+    ctx.lineWidth   = isHov ? 3 : 2.5;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(-len, 0);
+    ctx.lineTo( len, 0);
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+
+    // End cap dots
+    ctx.fillStyle  = col;
+    ctx.globalAlpha = 0.9;
+    ctx.beginPath(); ctx.arc(-len, 0, 3.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc( len, 0, 3.5, 0, Math.PI * 2); ctx.fill();
+    ctx.globalAlpha = 1;
+
+    ctx.restore();
+  }
+}
+
+// ═══════════════════════════════════════════
+//  DRAW — TARGET
+// ═══════════════════════════════════════════
+
+function drawTarget() {
+  const lv = LEVELS[lvIdx];
+  const [px, py] = gp(lv.target.x, lv.target.y);
+  const col   = laserHit ? WIN_C : 'rgba(0,255,204,0.55)';
+  const col2  = laserHit ? WIN_C : 'rgba(0,255,204,0.28)';
+  const R = 17;
+
+  ctx.save();
+  ctx.translate(px, py);
+  ctx.rotate(Math.PI / 10); // slight tilt for style
+
+  if (laserHit) {
+    // Filled glow burst
+    ctx.beginPath(); poly(0, 0, R + 8, 6);
+    ctx.fillStyle = WIN_C + '1a'; ctx.fill();
+    ctx.shadowBlur = 30; ctx.shadowColor = WIN_C;
+  }
+
+  // Outer hexagon
+  ctx.beginPath(); poly(0, 0, R, 6);
+  ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke();
+  ctx.shadowBlur = 0;
+
+  // Inner hexagon
+  ctx.beginPath(); poly(0, 0, R * 0.5, 6);
+  ctx.strokeStyle = col2; ctx.lineWidth = 1.5; ctx.stroke();
+
+  // Center dot
+  ctx.beginPath(); ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
+  ctx.fillStyle = col; ctx.fill();
+
+  ctx.restore();
+}
+
+// ═══════════════════════════════════════════
+//  DRAW — PARTICLES
+// ═══════════════════════════════════════════
+
+function drawParticles(dt) {
+  ctx.save();
+  for (let i = particles.length - 1; i >= 0; i--) {
+    const p = particles[i];
+    p.life -= dt;
+    if (p.life <= 0) { particles.splice(i, 1); continue; }
+    p.x  += p.vx * dt;
+    p.y  += p.vy * dt;
+    p.vy += 100 * dt;  // gravity
+    const a = (p.life / p.maxLife) * 0.9;
+    ctx.globalAlpha = a;
+    ctx.fillStyle   = WIN_C;
+    const s = p.s * (p.life / p.maxLife);
+    ctx.fillRect(p.x - s * 0.5, p.y - s * 0.5, s, s);
+  }
+  ctx.globalAlpha = 1;
+  ctx.restore();
+}
+
+function spawnParticles() {
+  const lv = LEVELS[lvIdx];
+  const [px, py] = gp(lv.target.x, lv.target.y);
+  for (let i = 0; i < 32; i++) {
+    const a   = Math.random() * Math.PI * 2;
+    const spd = 40 + Math.random() * 110;
+    particles.push({
+      x: px, y: py,
+      vx: Math.cos(a) * spd, vy: Math.sin(a) * spd - 55,
+      s: 3 + Math.random() * 4.5,
+      life: 0.5 + Math.random() * 0.75,
+      maxLife: 1.25
+    });
+  }
+}
+
+// ═══════════════════════════════════════════
+//  SHAPE HELPERS
+// ═══════════════════════════════════════════
+
+function poly(cx, cy, r, n) {
+  for (let i = 0; i < n; i++) {
+    const a = (i / n) * Math.PI * 2;
+    if (i === 0) ctx.moveTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+    else         ctx.lineTo(cx + r * Math.cos(a), cy + r * Math.sin(a));
+  }
+  ctx.closePath();
+}
+
+function rrect(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y); ctx.arcTo(x+w, y,   x+w, y+r,   r);
+  ctx.lineTo(x + w, y+h-r); ctx.arcTo(x+w, y+h, x+w-r,y+h, r);
+  ctx.lineTo(x + r, y+h);   ctx.arcTo(x,   y+h, x,   y+h-r, r);
+  ctx.lineTo(x,     y+r);   ctx.arcTo(x,   y,   x+r, y,     r);
+  ctx.closePath();
+}
+
+// ═══════════════════════════════════════════
+//  MAIN LOOP
+// ═══════════════════════════════════════════
+
+function frame(ts) {
+  requestAnimationFrame(frame);
+  const dt = lastTime ? Math.min((ts - lastTime) / 1000, 0.08) : 0;
+  lastTime = ts;
+
+  // Animate mirror rotations
+  for (const m of mirrors) {
+    const d = m.tgt - m.vis;
+    if (Math.abs(d) > 0.0007) { m.vis += d * LERP; dirty = true; }
+    else m.vis = m.tgt;
+  }
+
+  if (particles.length > 0 || flashAlpha > 0) dirty = true;
+  if (!dirty) return;
+  dirty = false;
+
+  refreshDims();
+  ctx.clearRect(0, 0, W, H);
+
+  drawBG();
+  drawLaser();
+  drawTarget();
+  drawEmitter();
+  drawMirrors();
+  drawParticles(dt);
+
+  // Win screen flash (green tint)
+  if (flashAlpha > 0) {
+    ctx.fillStyle = `rgba(0,255,170,${flashAlpha.toFixed(3)})`;
+    ctx.fillRect(0, 0, W, H);
+    flashAlpha = Math.max(0, flashAlpha - dt * 1.4);
+  }
+}
+
+// ═══════════════════════════════════════════
+//  INPUT
+// ═══════════════════════════════════════════
+
+function getMirrorAt(mx, my) {
+  for (const m of mirrors) {
+    const [px, py] = gp(m.gx, m.gy);
+    if (Math.hypot(mx - px, my - py) < CELL * 0.44) return m;
+  }
+  return null;
+}
+
+function doClick(mx, my) {
+  if (won) return;
+  const m = getMirrorAt(mx, my);
+  if (!m) return;
+
+  // Dismiss hint on first click
+  if (hintTimer === null) {
+    hintTimer = 0;
+    const h = document.getElementById('hint');
+    h.style.opacity = '0';
+    setTimeout(() => h.style.display = 'none', 1000);
+  }
+
+  m.rot = 1 - m.rot;
+  m.tgt = mRad(m.rot);
+  castLaser();
+  dirty = true;
+  playClick();
+}
+
+canvas.addEventListener('click', e => {
+  const r = canvas.getBoundingClientRect();
+  doClick(e.clientX - r.left, e.clientY - r.top);
+});
+
+canvas.addEventListener('touchstart', e => {
+  e.preventDefault();
+  const r = canvas.getBoundingClientRect();
+  const t = e.touches[0];
+  doClick(t.clientX - r.left, t.clientY - r.top);
+}, { passive: false });
+
+canvas.addEventListener('mousemove', e => {
+  const r    = canvas.getBoundingClientRect();
+  const prev = hoveredM;
+  hoveredM   = won ? null : getMirrorAt(e.clientX - r.left, e.clientY - r.top);
+  canvas.style.cursor = hoveredM ? 'pointer' : 'default';
+  if (hoveredM !== prev) dirty = true;
+});
+
+canvas.addEventListener('mouseleave', () => {
+  if (hoveredM) { hoveredM = null; dirty = true; }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'r' || e.key === 'R') doRestart();
+});
+
+document.getElementById('rb').addEventListener('click', doRestart);
+
+function doRestart() {
+  if (winTimer) { clearTimeout(winTimer); winTimer = null; }
+  particles = []; flashAlpha = 0;
+  loadLevel(lvIdx);
+}
+
+// ═══════════════════════════════════════════
+//  RESIZE
+// ═══════════════════════════════════════════
+
+function onResize() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+  dirty = true;
+}
+window.addEventListener('resize', onResize);
+onResize();
+
+// ═══════════════════════════════════════════
+//  AUDIO  (Web Audio API — no files needed)
+// ═══════════════════════════════════════════
+
+let AC = null;
+function ac() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  return AC;
+}
+
+function playClick() {
+  try {
+    const a = ac(), t = a.currentTime;
+    const o = a.createOscillator(), g = a.createGain();
+    o.connect(g); g.connect(a.destination);
+    o.type = 'square';
+    o.frequency.setValueAtTime(700, t);
+    o.frequency.exponentialRampToValueAtTime(330, t + 0.065);
+    g.gain.setValueAtTime(0.10, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+    o.start(t); o.stop(t + 0.09);
+  } catch(_) {}
+}
+
+function playWin() {
+  try {
+    const a = ac();
+    // Ascending C major arpeggio  C5 E5 G5 C6
+    [523, 659, 784, 1047].forEach((f, i) => {
+      const o = a.createOscillator(), g = a.createGain();
+      o.connect(g); g.connect(a.destination);
+      o.type = 'sine'; o.frequency.value = f;
+      const t = a.currentTime + i * 0.10;
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.12, t + 0.025);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
+      o.start(t); o.stop(t + 0.6);
+    });
+  } catch(_) {}
+}
+
+// ═══════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════
+
+loadLevel(0);
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>
