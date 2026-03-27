@@ -13,10 +13,9 @@
     <!-- the flag isnt in comments stupid ahh  -->
     <script>
         alert("xss")
+        let name = "tako";
+        document.getElementById("output").textContent = name;
     </script>
-    <form action="submit_flag.php" method="POST">
-        <input type="text" name="flag" placeholder="Enter your flag here">
-        <button type="submit">Submit</button>
-    </form>
-    flag
+    <p id="output"></p>    
+    
 </body>
