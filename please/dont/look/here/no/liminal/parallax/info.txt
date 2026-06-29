@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 in life, you will never find a liminal parallax
+=======
+THERE IS NOTHING HERE
+>>>>>>> 3b8e2f16fc61cc85fdbc61f667a7348e6276f4c9
