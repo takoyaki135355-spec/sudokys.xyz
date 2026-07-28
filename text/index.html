@@ -212,7 +212,7 @@ body.code-mode .code-badge {
       <button class="mode-btn" id="codeModeBtn">Code</button>
     </div>
     
-    <button class="btn" id="themeBtn" title="Toggle theme">☀️ Light</button>
+    <button class="btn" id="themeBtn" title="Toggle theme">Light</button>
     <button class="btn" id="downloadBtn" title="Save file">Save</button>
     <button class="btn" id="clearBtn" title="Clear text">Clear</button>
   </div>
@@ -327,7 +327,7 @@ function getTextBeforeRange(container, range) {
 themeBtn.addEventListener('click', () => {
   isDark = !isDark;
   document.body.classList.toggle('dark', isDark);
-  themeBtn.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+  themeBtn.textContent = isDark ? 'Light' : 'Dark';
 });
 
 // Download .txt / code file
