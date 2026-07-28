@@ -157,6 +157,44 @@ header {
   opacity: 0.6;
 }
 
+body.code-mode #editor {
+  display: none;
+}
+
+.lang-selector {
+  display: none;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  outline: none;
+}
+
+body.code-mode .lang-selector {
+  display: block;
+}
+
+.CodeMirror {
+  display: none;
+  height: 100%;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  background: transparent !important;
+}
+
+body.code-mode .CodeMirror {
+  display: block;
+  flex-grow: 1;
+}
+
+.CodeMirror-hints {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.9rem;
+}
+
 footer {
   padding: 0.5rem 1.5rem;
   border-top: 1px solid var(--border-color);
@@ -198,6 +236,13 @@ body.code-mode .code-indicator {
   }
 }
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/anyword-hint.min.js"></script>
 </head>
 <body class="dark">
 
@@ -210,6 +255,10 @@ body.code-mode .code-indicator {
       <button class="mode-btn" id="codeModeBtn">Code</button>
     </div>
     
+    <select id="langSelector" class="lang-selector">
+      <option value="python">Python</option>
+    </select>
+    
     <button class="btn" id="themeBtn" title="Toggle theme">Light</button>
     <button class="btn" id="downloadBtn" title="Save file">Save</button>
     <button class="btn" id="clearBtn" title="Clear text">Clear</button>
@@ -218,6 +267,7 @@ body.code-mode .code-indicator {
 
 <div class="editor-container">
   <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing your notes here...">The quick brown fox jumps over the lazy dog.</div>
+  <textarea id="codeEditor"></textarea>
 </div>
 
 <footer>
@@ -232,6 +282,8 @@ body.code-mode .code-indicator {
 
 <script>
 const editor = document.getElementById('editor');
+const codeEditorTextarea = document.getElementById('codeEditor');
+const langSelector = document.getElementById('langSelector');
 const themeBtn = document.getElementById('themeBtn');
 const textModeBtn = document.getElementById('textModeBtn');
 const codeModeBtn = document.getElementById('codeModeBtn');
@@ -244,10 +296,38 @@ const wordCount = document.getElementById('wordCount');
 let isCodeMode = false;
 let isDark = true;
 
+// Initialize CodeMirror
+const cm = CodeMirror.fromTextArea(codeEditorTextarea, {
+  lineNumbers: true,
+  mode: 'python',
+  theme: 'dracula',
+  extraKeys: {"Ctrl-Space": "autocomplete"}
+});
+
+cm.on("inputRead", function(instance, change) {
+  if (change.text[0].match(/\w/)) {
+    cm.showHint({hint: CodeMirror.hint.anyword, completeSingle: false});
+  }
+});
+
+cm.on('change', () => {
+  if (!isCodeMode) return;
+  const val = cm.getValue();
+  localStorage.setItem('tako_txt_content', val);
+  updateStats();
+});
+
+cm.on('cursorActivity', () => {
+  if (!isCodeMode) return;
+  const cursor = cm.getCursor();
+  posIndicator.textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
+});
+
 // Load saved content & settings
 const savedText = localStorage.getItem('tako_txt_content');
 if (savedText) {
   editor.innerText = savedText;
+  cm.setValue(savedText);
 }
 updateStats();
 
@@ -263,24 +343,31 @@ function setMode(code) {
   document.body.classList.toggle('code-mode', isCodeMode);
   textModeBtn.classList.toggle('active', !isCodeMode);
   codeModeBtn.classList.toggle('active', isCodeMode);
-  editor.setAttribute('spellcheck', !isCodeMode);
-  editor.dataset.placeholder = isCodeMode 
-    ? "// Code editor mode\n// Type your script or code snippet here..." 
-    : "Start typing your notes here...";
+  
+  if (isCodeMode) {
+    // Sync to CodeMirror
+    if (cm.getValue() !== editor.innerText) {
+      cm.setValue(editor.innerText);
+    }
+    cm.refresh();
+    const cursor = cm.getCursor();
+    posIndicator.textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
+  } else {
+    // Sync to Text Editor
+    if (editor.innerText !== cm.getValue()) {
+      editor.innerText = cm.getValue();
+    }
+    updateCursorPos();
+  }
+
   localStorage.setItem('tako_txt_mode', isCodeMode ? 'code' : 'text');
+  updateStats();
 }
 
-// Tab key intercept for Code Mode
-editor.addEventListener('keydown', (e) => {
-  if (isCodeMode && e.key === 'Tab') {
-    e.preventDefault();
-    document.execCommand('insertText', false, '  ');
-  }
-});
-
-// Auto save, stats & position update
+// Auto save & stats for Text Mode
 ['input', 'keyup', 'mouseup', 'click', 'focus'].forEach(evt => {
   editor.addEventListener(evt, () => {
+    if (isCodeMode) return;
     updateStats();
     updateCursorPos();
     if (evt === 'input') {
@@ -290,15 +377,15 @@ editor.addEventListener('keydown', (e) => {
 });
 
 document.addEventListener('selectionchange', () => {
-  if (document.activeElement === editor) {
+  if (!isCodeMode && document.activeElement === editor) {
     updateCursorPos();
   }
 });
 
 function updateStats() {
-  const text = editor.innerText.trim();
-  const chars = editor.innerText.length;
-  const words = text ? text.split(/\s+/).length : 0;
+  const text = isCodeMode ? cm.getValue() : editor.innerText.trim();
+  const chars = text.length;
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
   charCount.textContent = `${chars} char${chars !== 1 ? 's' : ''}`;
   wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
 }
@@ -328,13 +415,14 @@ themeBtn.addEventListener('click', () => {
   isDark = !isDark;
   document.body.classList.toggle('dark', isDark);
   themeBtn.textContent = isDark ? 'Light' : 'Dark';
+  cm.setOption('theme', isDark ? 'dracula' : 'default');
 });
 
 // Download .txt / code file
 downloadBtn.addEventListener('click', () => {
-  const text = editor.innerText;
+  const text = isCodeMode ? cm.getValue() : editor.innerText;
   if (!text) return;
-  const ext = isCodeMode ? 'js' : 'txt';
+  const ext = isCodeMode ? (langSelector.value === 'python' ? 'py' : 'txt') : 'txt';
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -348,13 +436,19 @@ downloadBtn.addEventListener('click', () => {
 clearBtn.addEventListener('click', () => {
   if (confirm('Clear editor content?')) {
     editor.innerText = '';
+    cm.setValue('');
     localStorage.removeItem('tako_txt_content');
     updateStats();
-    updateCursorPos();
+    if (isCodeMode) {
+      const cursor = cm.getCursor();
+      posIndicator.textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
+    } else {
+      updateCursorPos();
+    }
   }
 });
 
-updateCursorPos();
+if (!isCodeMode) updateCursorPos();
 </script>
 
 </body>
