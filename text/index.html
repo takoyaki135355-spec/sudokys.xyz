@@ -14,17 +14,18 @@
 :root {
   --bg-color: #ffffff;
   --text-color: #1e1e1e;
-  --muted-color: #888888;
+  --muted-color: #999999;
   --border-color: #e5e5e5;
-  --accent-color: #00ffc3;
+  --accent-color: #10b981;
   --font-family: Georgia, serif;
 }
 
 body.dark {
   --bg-color: #12161f;
-  --text-color: #e0e6ed;
-  --muted-color: #607080;
-  --border-color: rgba(255, 255, 255, 0.08);
+  --text-color: #d4dbe5;
+  --muted-color: #5a6a7a;
+  --border-color: rgba(255, 255, 255, 0.07);
+  --accent-color: #34d399;
 }
 
 body.code-mode {
@@ -174,43 +175,17 @@ footer {
 }
 
 .pos-indicator {
-  color: var(--text-color);
-  font-weight: 500;
+  color: var(--muted-color);
 }
 
-/* Sleek Code Mode Pill */
-.code-badge {
+.code-indicator {
   display: none;
-  align-items: center;
-  gap: 0.4rem;
-  font-size: 0.7rem;
-  letter-spacing: 0.5px;
   color: var(--accent-color);
-  background: rgba(0, 255, 195, 0.06);
-  border: 1px solid rgba(0, 255, 195, 0.25);
-  padding: 0.15rem 0.55rem;
-  border-radius: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 500;
-  transition: all 0.25s ease;
+  font-size: 0.75rem;
 }
 
-.code-badge-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--accent-color);
-  box-shadow: 0 0 6px var(--accent-color);
-  animation: pulse-dot 2s infinite;
-}
-
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-body.code-mode .code-badge {
-  display: inline-flex;
+body.code-mode .code-indicator {
+  display: inline;
 }
 
 @media (max-width: 640px) {
@@ -242,7 +217,7 @@ body.code-mode .code-badge {
 </header>
 
 <div class="editor-container">
-  <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing your notes here..."></div>
+  <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing your notes here...">The quick brown fox jumps over the lazy dog.</div>
 </div>
 
 <footer>
@@ -250,10 +225,7 @@ body.code-mode .code-badge {
     <span class="pos-indicator" id="posIndicator">Ln 1, Col 1</span>
     <span id="charCount">0 chars</span>
     <span id="wordCount">0 words</span>
-    <span class="code-badge">
-      <span class="code-badge-dot"></span>
-      <span>CODE MODE</span>
-    </span>
+    <span class="code-indicator">&lt;/&gt;</span>
   </div>
   <div>Auto-saved</div>
 </footer>
@@ -276,8 +248,8 @@ let isDark = true;
 const savedText = localStorage.getItem('tako_txt_content');
 if (savedText) {
   editor.innerText = savedText;
-  updateStats();
 }
+updateStats();
 
 const savedMode = localStorage.getItem('tako_txt_mode');
 if (savedMode === 'code') setMode(true);
