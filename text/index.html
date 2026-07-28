@@ -192,7 +192,40 @@ body.code-mode .CodeMirror {
 
 .CodeMirror-hints {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
+  background: var(--bg-color) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 6px !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+  padding: 4px 0 !important;
+  color: var(--text-color) !important;
+  overflow: hidden;
+}
+
+.CodeMirror-hint {
+  padding: 6px 12px !important;
+  color: var(--text-color) !important;
+  border-radius: 0 !important;
+  cursor: pointer;
+}
+
+.CodeMirror-hint-active {
+  background: var(--accent-color) !important;
+  color: #ffffff !important;
+}
+
+body.dark .CodeMirror-hint-active {
+  color: #12161f !important;
+}
+
+/* Theme Integration Overrides */
+body.dark .CodeMirror-gutters {
+  background: transparent !important;
+  border-right: 1px solid var(--border-color) !important;
+}
+
+body.dark .CodeMirror-linenumber {
+  color: var(--muted-color) !important;
 }
 
 footer {
