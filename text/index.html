@@ -1,89 +1,249 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABS0lEQVRYR+2XwUoCURSGR0vcCgX5CO59CheBLxAF4SrCpZAVgrgIxNoUVFvfoBcIeoHC9oGbdBmtTNC+H67gpvTMNN6EufAxM8yc8//3nBnu3FQQBCk4gSPIu2sOsY0pmQdwAy2Jn0IzNrnfE5/JwLubuQ8PAxmYrKDsP01uKgPqibeRGEgqsIYV+GPL9nQdvtgcVOEz+tdrM7CB4AOU4A324SmaCZsBaSlCy9YFZKEN5/AVzojdwEynwEkXivAMe/BqNxHegLQy0IAajKEOV6DVZckRzYBEKnAJm64VaslKDOwgdA+70HMteFly2nOPhatAmQy3sO1mr9KP7OKKsBnQ03dwCH04gMdwwrMomwFFqd9bcAwf0cTtFVBE2vaSLbJor8CijMb7iYGkAv+iAt43Jt63Zt43p3oPtJzoP0drnK7jHNoKDuEaWt87DknNX2GRnwAAABBkZUJHNzlBRDdFQjFGRjY1NTI4NVhXA3EAAAAASUVORK5CYII=">
 
-  <link
-  rel="icon"
-  type="image/png"
-  href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABS0lEQVRYR+2XwUoCURSGR0vcCgX5CO59CheBLxAF4SrCpZAVgrgIxNoUVFvfoBcIeoHC9oGbdBmtTNC+H67gpvTMNN6EufAxM8yc8//3nBnu3FQQBCk4gSPIu2sOsY0pmQdwAy2Jn0IzNrnfE5/JwLubuQ8PAxmYrKDsP01uKgPqibeRGEgqsIYV+GPL9nQdvtgcVOEz+tdrM7CB4AOU4A324SmaCZsBaSlCy9YFZKEN5/AVzojdwEynwEkXivAMe/BqNxHegLQy0IAajKEOV6DVZckRzYBEKnAJm64VaslKDOwgdA+70HMteFly2nOPhatAmQy3sO1mr9KP7OKKsBnQ03dwCH04gMdwwrMomwFFqd9bcAwf0cTtFVBE2vaSLbJor8CijMb7iYGkAv+iAt43Jt63Zt43p3oPtJzoP0drnK7jHNoKDuEaWt87DknNX2GRnwAAABBkZUJHNzlBRDdFQjFGRjY1NTI4NVhXA3EAAAAASUVORK5CYII=">
+<title>.Txt | Minimal Notepad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
 
-  <title>.Txt</title>
-  <style>
-    :root {
-      --bg-color: #ffffff;
-      --text-color: #222222;
-      --placeholder-color: #888888;
-    }
-    body.dark {
-      --bg-color: #1e1e1e;
-      --text-color: #eeeeee;
-      --placeholder-color: #888888;
-    }
+<style>
+:root {
+  --bg-color: #ffffff;
+  --text-color: #1e293b;
+  --card-bg: #f8fafc;
+  --border-color: #e2e8f0;
+  --muted-color: #64748b;
+  --accent-color: #00ffc3;
+  --font-family: Georgia, 'Newsreader', serif;
+}
 
-    body {
-      margin: 0;
-      font-family: Georgia, serif;
-      background: var(--bg-color);
-      color: var(--text-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      transition: background 0.3s, color 0.3s;
-    }
+body.dark {
+  --bg-color: #0b0f17;
+  --text-color: #e2ebf5;
+  --card-bg: #111823;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --muted-color: #64748b;
+  --accent-color: #00ffc3;
+}
 
-    .editor-container {
-      position: relative;
-      width: 80%;
-      height: 70%;
-    }
+body.mono {
+  --font-family: 'JetBrains Mono', monospace;
+}
 
-    #editor {
-      width: 100%;
-      height: 100%;
-      padding: 20px;
-      border-radius: 10px;
-      background: var(--bg-color);
-      color: var(--text-color);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-      outline: none;
-      overflow-y: auto;
-      line-height: 1.5;
-      font-size: 18px;
-      transition: background 0.3s, color 0.3s;
-    }
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-    #editor:empty::before {
-      content: attr(data-placeholder);
-      color: var(--placeholder-color);
-    }
+body {
+  font-family: var(--font-family);
+  background: var(--bg-color);
+  color: var(--text-color);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
+}
 
-    #toggleBtn {
-      position: absolute;
-      top: -50px; /* vertical padding above editor */
-      left: 0; /* align left with editor */
-      width: 40px;
-      height: 40px;
-      border: none;
-      border-radius: 8px;
-      background: var(--text-color);
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-  </style>
+header {
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.brand {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--text-color);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.btn:hover {
+  border-color: var(--muted-color);
+}
+
+.editor-container {
+  flex-grow: 1;
+  max-width: 860px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+}
+
+#editor {
+  flex-grow: 1;
+  width: 100%;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  outline: none;
+  overflow-y: auto;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  font-family: var(--font-family);
+  transition: background 0.3s, color 0.3s, border-color 0.3s;
+}
+
+#editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--muted-color);
+}
+
+footer {
+  padding: 0.75rem 2rem;
+  border-top: 1px solid var(--border-color);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.stats {
+  display: flex;
+  gap: 1rem;
+}
+
+@media (max-width: 640px) {
+  header, footer {
+    padding: 0.75rem 1rem;
+  }
+  .editor-container {
+    padding: 1rem;
+  }
+}
+</style>
 </head>
-<body>
-  <div class="editor-container">
-    <button id="toggleBtn"></button>
-    <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing here..."></div>
+<body class="dark">
+
+<header>
+  <a href="/" class="brand">
+    <span>.Txt</span>
+    <span style="color: var(--muted-color); font-weight: 400; font-size: 0.8rem;">| takoyaki pad</span>
+  </a>
+
+  <div class="controls">
+    <button class="btn" id="fontBtn">Font: Serif</button>
+    <button class="btn" id="themeBtn">🌙 Dark</button>
+    <button class="btn" id="downloadBtn">⬇️ Save .txt</button>
+    <button class="btn" id="clearBtn">🗑️ Clear</button>
   </div>
+</header>
 
-  <script>
-    const toggleBtn = document.getElementById('toggleBtn');
+<div class="editor-container">
+  <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing your notes here..."></div>
+</div>
 
-    toggleBtn.onclick = () => {
-      document.body.classList.toggle('dark');
-    };
-  </script>
+<footer>
+  <div class="stats">
+    <span id="charCount">0 characters</span> ·
+    <span id="wordCount">0 words</span>
+  </div>
+  <div>Auto-saved to browser storage</div>
+</footer>
+
+<script>
+const editor = document.getElementById('editor');
+const themeBtn = document.getElementById('themeBtn');
+const fontBtn = document.getElementById('fontBtn');
+const downloadBtn = document.getElementById('downloadBtn');
+const clearBtn = document.getElementById('clearBtn');
+const charCount = document.getElementById('charCount');
+const wordCount = document.getElementById('wordCount');
+
+// Load saved content
+const savedText = localStorage.getItem('tako_txt_content');
+if (savedText) {
+  editor.innerText = savedText;
+  updateStats();
+}
+
+// Auto save and stat update
+editor.addEventListener('input', () => {
+  localStorage.setItem('tako_txt_content', editor.innerText);
+  updateStats();
+});
+
+function updateStats() {
+  const text = editor.innerText.trim();
+  const chars = editor.innerText.length;
+  const words = text ? text.split(/\s+/).length : 0;
+  charCount.textContent = `${chars} character${chars !== 1 ? 's' : ''}`;
+  wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
+}
+
+// Theme toggle
+let isDark = true;
+themeBtn.addEventListener('click', () => {
+  isDark = !isDark;
+  document.body.classList.toggle('dark', isDark);
+  themeBtn.textContent = isDark ? '🌙 Dark' : '☀️ Light';
+});
+
+// Font toggle
+let isMono = false;
+fontBtn.addEventListener('click', () => {
+  isMono = !isMono;
+  document.body.classList.toggle('mono', isMono);
+  fontBtn.textContent = isMono ? 'Font: Mono' : 'Font: Serif';
+});
+
+// Download .txt
+downloadBtn.addEventListener('click', () => {
+  const text = editor.innerText;
+  if (!text) return;
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `notes-${new Date().toISOString().slice(0,10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+});
+
+// Clear
+clearBtn.addEventListener('click', () => {
+  if (confirm('Clear editor content?')) {
+    editor.innerText = '';
+    localStorage.removeItem('tako_txt_content');
+    updateStats();
+  }
+});
+</script>
+
 </body>
 </html>

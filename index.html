@@ -4,17 +4,29 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="/admin/assets/favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>tako</title>
+<title>tako | sudokys.xyz</title>
+<meta name="description" content="Personal website of Tako - CTF player, OSINT enthusiast, ethical hacker, and security researcher.">
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    --bg: #0a0f14;
-    --card: #111821;
-    --text: #d6e2f0;
+    --bg: #070a0f;
+    --bg-alt: #0d121c;
+    --card: #111823;
+    --card-border: rgba(0, 255, 195, 0.15);
+    --text: #e2ebf5;
+    --text-dim: #94a3b8;
     --accent: #00ffc3;
-    --muted: #5c6b7a;
+    --accent-glow: rgba(0, 255, 195, 0.25);
+    --accent-secondary: #3b82f6;
+    --muted: #475569;
+    --terminal-bg: #0a0e17;
+    --danger: #ff4757;
+    --warning: #eccc68;
+    --radius: 12px;
 }
 
 * {
@@ -23,107 +35,467 @@
     box-sizing: border-box;
 }
 
+html {
+    scroll-behavior: smooth;
+}
 
 body {
     font-family: "JetBrains Mono", monospace;
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
 }
 
+/* Background Matrix Canvas */
+#matrix-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    opacity: 0.18;
+    pointer-events: none;
+    transition: opacity 0.5s ease;
+}
+
+body.matrix-active #matrix-canvas {
+    opacity: 0.45;
+}
+
+/* Header & Nav */
 header {
-    padding: 1.5rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    background: rgba(7, 10, 15, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
 .logo {
-    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 700;
+    font-size: 1.1rem;
     letter-spacing: 1px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.logo-tag {
+    color: var(--accent);
+    text-shadow: 0 0 10px var(--accent-glow);
+}
+
+.logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 nav a {
     text-decoration: none;
-    color: var(--muted);
-    margin-left: 1.5rem;
-    transition: 0.2s ease;
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
 }
 
 nav a:hover {
     color: var(--accent);
+    text-shadow: 0 0 8px var(--accent-glow);
 }
 
+.nav-badge {
+    font-size: 0.75rem;
+    padding: 0.15rem 0.5rem;
+    border-radius: 20px;
+    background: rgba(0, 255, 195, 0.1);
+    color: var(--accent);
+    border: 1px solid var(--card-border);
+}
+
+.nav-controls {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: 1rem;
+}
+
+.icon-btn {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--text-dim);
+    padding: 0.4rem 0.7rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.icon-btn.active {
+    background: rgba(0, 255, 195, 0.15);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+/* Layout container */
+main {
+    position: relative;
+    z-index: 10;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem;
+}
+
+/* Hero Section & Terminal */
 .hero {
-    padding: 6rem 2rem 4rem 2rem;
-    max-width: 900px;
-    margin: auto;
+    margin-bottom: 3.5rem;
 }
 
-.hero h1 {
-    font-size: 2.5rem;
+.terminal-window {
+    background: var(--terminal-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(0, 255, 195, 0.05);
+    overflow: hidden;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.terminal-window:focus-within {
+    border-color: rgba(0, 255, 195, 0.4);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(0, 255, 195, 0.15);
+}
+
+.terminal-bar {
+    background: #141b26;
+    padding: 0.75rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.terminal-dots {
+    display: flex;
+    gap: 6px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.dot-red { background: #ff5f56; }
+.dot-yellow { background: #ffbd2e; }
+.dot-green { background: #27c93f; }
+
+.terminal-title {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+}
+
+.terminal-actions {
+    font-size: 0.75rem;
+    color: var(--muted);
+}
+
+.terminal-body {
+    padding: 1.5rem;
+    min-height: 220px;
+    max-height: 420px;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    color: var(--text);
+}
+
+.terminal-log {
     margin-bottom: 1rem;
 }
 
-.accent {
+.terminal-line {
+    margin-bottom: 0.4rem;
+    word-break: break-word;
+}
+
+.prompt-line {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+}
+
+.user-prompt {
     color: var(--accent);
+    white-space: nowrap;
+    font-weight: 600;
 }
 
-.hero p {
-    color: var(--muted);
-    max-width: 600px;
+.cmd-input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.95rem;
+    width: 100%;
 }
 
-.sections {
-    max-width: 900px;
-    margin: 4rem auto;
-    padding: 0 2rem;
-}
-
-.card {
-    background: var(--card);
-    padding: 2rem;
-    margin-bottom: 2rem;
-    border-radius: 8px;
-    transition: 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 0 15px rgba(0,255,195,0.15);
-}
-
-.card h2 {
-    margin-bottom: 0.5rem;
-    font-size: 1.2rem;
-}
-
-footer {
-    text-align: center;
-    padding: 3rem 1rem;
-    color: var(--muted);
-    font-size: 0.9rem;
-}
 .cursor {
     display: inline-block;
     width: 8px;
-    height: 1em;
+    height: 1.1em;
     background: var(--accent);
-    margin-left: 5px;
+    vertical-align: middle;
     animation: blink 1s infinite;
 }
 
 @keyframes blink {
+    0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
 
+.hero-subtitle {
+    margin-top: 1.5rem;
+    color: var(--text-dim);
+    font-size: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+}
 
+.tag {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    transition: all 0.2s ease;
+}
 
+.tag:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
 
+/* Sections & Cards */
+.section-title {
+    font-size: 1.25rem;
+    color: #fff;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-title::before {
+    content: "#";
+    color: var(--accent);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(0, 255, 195, 0.4);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 255, 195, 0.12);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.card h2 {
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+.card-icon {
+    font-size: 1.5rem;
+}
+
+.card p {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    flex-grow: 1;
+    margin-bottom: 1.25rem;
+}
+
+.card-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.card-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: gap 0.2s ease;
+}
+
+.card-link:hover {
+    gap: 0.7rem;
+    text-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Skills Badges */
+.skills-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.skills-list li {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.skills-list li::before {
+    content: "→";
+    color: var(--accent);
+}
+
+/* Interactive Status Pill */
+.status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0, 255, 195, 0.08);
+    border: 1px solid rgba(0, 255, 195, 0.2);
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+}
+
+/* Footer */
+footer {
+    position: relative;
+    z-index: 10;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.85rem;
+    background: rgba(7, 10, 15, 0.9);
+}
+
+.footer-content {
+    max-width: 960px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.footer-links {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.footer-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+}
+
+@media (max-width: 640px) {
+    header {
+        padding: 1rem;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    nav {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .hero {
+        padding: 1rem 0;
+    }
+
+    .terminal-body {
+        padding: 1rem;
+        min-height: 180px;
+    }
+}
 </style>
 </head>
-
-
 
 <!--
     Why hello my curious little one, are you trying to find a flag here?
@@ -138,76 +510,399 @@ footer {
     
 -->
 
-
-
-
-
-	
 <body>
 
-<header>
-    <div class="logo">tako</div>
-    <nav>
-        <a href="contactme">contact</a>
-		<a href="https://buisness.sudokys.xyz" target="_blank" rel="noopener noreferrer">Buisness Inquries</a>
+<canvas id="matrix-canvas"></canvas>
 
+<header>
+    <a href="#" class="logo">
+        <span class="logo-dot"></span>
+        <span>tako<span class="logo-tag">@sudokys</span></span>
+    </a>
+    <nav>
+        <a href="#about">about</a>
+        <a href="#projects">projects</a>
+        <a href="#apps">apps <span class="nav-badge">3</span></a>
+        <a href="contactme">contact</a>
+        <a href="https://buisness.sudokys.xyz" target="_blank" rel="noopener noreferrer">business inquiries</a>
     </nav>
+    <div class="nav-controls">
+        <button class="icon-btn" id="matrix-btn" title="Toggle Matrix Effect">🟢 Matrix</button>
+        <button class="icon-btn" id="sfx-btn" title="Toggle Audio SFX">🔊 Audio</button>
+    </div>
 </header>
 
-<section class="hero">
-    <h1>
-        <span class="accent">tako</span>@web:~$ 
-        <span id="typed"></span><span class="cursor"></span>
-    </h1>
-    <p>
-        CTF player. OSINT enthusiast. Ethical Hacker. Reversing binaries for fun.
-    </p>
-</section>
-
-<section class="sections">
-
-    <div class="card" id="about">
-        <h2>about_me()</h2>
-        <p>
-            Hi, I’m Tako.<br><br>
-
-I happen to be a person.<br><br> THEM?! ON TOP?! <br> <br> My mom is rlly cool 😎
-        </p>
+<main>
+    <div class="status-pill">
+        <span class="logo-dot"></span>
+        <span>Status: Reverse Engineering & CTF Hunting</span>
     </div>
 
-    <div class="card" id="projects">
-        <h2>current_focus()</h2>
-        <p>
-            → CTF<br>
-            → OSINT cases<br>
-            → Offensive Cybersecurity<br>
-	    → Being better than you
-        </p>
-    </div>
+    <!-- Hero Interactive Terminal -->
+    <section class="hero">
+        <div class="terminal-window" id="terminal">
+            <div class="terminal-bar">
+                <div class="terminal-dots">
+                    <span class="dot dot-red"></span>
+                    <span class="dot dot-yellow"></span>
+                    <span class="dot dot-green"></span>
+                </div>
+                <div class="terminal-title">tako@web: ~ (zsh) — interactive</div>
+                <div class="terminal-actions">Type 'help' for commands</div>
+            </div>
+            <div class="terminal-body" id="terminal-body">
+                <div class="terminal-log" id="terminal-log">
+                    <!-- Dynamic logs generated via JS -->
+                </div>
+                <div class="prompt-line">
+                    <span class="user-prompt">tako@web:~$</span>
+                    <input type="text" class="cmd-input" id="cmd-input" placeholder="type a command..." autocomplete="off" spellcheck="false">
+                </div>
+            </div>
+        </div>
 
-    
+        <div class="hero-subtitle">
+            <span class="tag">🛡️ CTF Player</span>
+            <span class="tag">🔍 OSINT Enthusiast</span>
+            <span class="tag">⚡ Ethical Hacker</span>
+            <span class="tag">👾 Binary Reversing</span>
+        </div>
+    </section>
 
-</section>
+    <!-- About Section -->
+    <section class="section" id="about">
+        <h2 class="section-title">about_me()</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2>profile.json</h2>
+                    <span class="card-icon">👤</span>
+                </div>
+                <p>
+                    Hi, I’m Tako — a security researcher & developer who likes breaking things down to understand how they work. When I'm not playing CTFs, I'm reversing binaries, hunting OSINT traces, or building web tools.
+                </p>
+                <div class="card-footer">
+                    <span style="color: var(--text-dim); font-size: 0.8rem;">Location: MY</span>
+                    <a href="contactme" class="card-link">Get in touch &rarr;</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>current_focus()</h2>
+                    <span class="card-icon">🎯</span>
+                </div>
+                <ul class="skills-list">
+                    <li>CTF Competitions & Writeups</li>
+                    <li>OSINT Case Investigations</li>
+                    <li>Offensive Cybersecurity</li>
+                    <li>Low-level Binary Reversing</li>
+                </ul>
+                <div class="card-footer">
+                    <span style="color: var(--text-dim); font-size: 0.8rem;">Mode: Active</span>
+                    <a href="#apps" class="card-link">View Tools &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Apps & Tools Section -->
+    <section class="section" id="apps">
+        <h2 class="section-title">web_apps()</h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-header">
+                    <h2>REFRACT</h2>
+                    <span class="card-icon">⚡</span>
+                </div>
+                <p>
+                    An interactive HTML5 canvas optics & laser reflection puzzle game built with custom physics and sound synthesis.
+                </p>
+                <div class="card-footer">
+                    <span style="color: var(--accent); font-size: 0.8rem;">Canvas Game</span>
+                    <a href="myscienceproject" class="card-link">Launch Game &rarr;</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>Polytrack</h2>
+                    <span class="card-icon">🏎️</span>
+                </div>
+                <p>
+                    A low-poly 3D physics-based racing game engine running directly in your browser.
+                </p>
+                <div class="card-footer">
+                    <span style="color: var(--accent); font-size: 0.8rem;">3D WebGL</span>
+                    <a href="polytrack" class="card-link">Play Polytrack &rarr;</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>.Txt Editor</h2>
+                    <span class="card-icon">📝</span>
+                </div>
+                <p>
+                    Distraction-free, minimal browser notepad with theme toggle and instant auto-save.
+                </p>
+                <div class="card-footer">
+                    <span style="color: var(--accent); font-size: 0.8rem;">Minimal App</span>
+                    <a href="text" class="card-link">Open Notepad &rarr;</a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h2>CTF Vault</h2>
+                    <span class="card-icon">🚩</span>
+                </div>
+                <p>
+                    Hidden challenges, secret endpoints, and puzzle hints scattered across the domain.
+                </p>
+                <div class="card-footer">
+                    <span style="color: var(--warning); font-size: 0.8rem;">Challenge</span>
+                    <a href="robots.txt" class="card-link">Inspect Robots &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</main>
 
 <footer>
-    © 2026 tako · built without unnecessary frameworks
+    <div class="footer-content">
+        <div class="footer-links">
+            <a href="#">Home</a> ·
+            <a href="contactme">Contact</a> ·
+            <a href="robots.txt">robots.txt</a> ·
+            <a href="contactme/publickey.asc">PGP Key</a> ·
+            <a href="admin">Admin Portal</a>
+        </div>
+        <p>&copy; 2026 tako · built without unnecessary frameworks · minimal surface area</p>
+    </div>
 </footer>
 
 <script>
-const text = "whoami";
-let i = 0;
-const speed = 100;
-const target = document.getElementById("typed");
+// Web Audio Synth for SFX
+let audioEnabled = false;
+let audioCtx = null;
 
-function typeWriter() {
-    if (i < text.length) {
-        target.textContent += text.charAt(i);
-        i++;
-        setTimeout(typeWriter, speed);
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 }
 
-typeWriter();
+function playBeep(freq = 600, duration = 0.05, type = 'sine') {
+    if (!audioEnabled) return;
+    try {
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        osc.start();
+        osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+}
+
+// SFX Button Toggle
+const sfxBtn = document.getElementById('sfx-btn');
+sfxBtn.addEventListener('click', () => {
+    audioEnabled = !audioEnabled;
+    sfxBtn.classList.toggle('active', audioEnabled);
+    sfxBtn.textContent = audioEnabled ? '🔊 Audio ON' : '🔇 Audio OFF';
+    if (audioEnabled) playBeep(800, 0.08);
+});
+
+// Matrix Digital Rain
+const matrixCanvas = document.getElementById('matrix-canvas');
+const ctx = matrixCanvas.getContext('2d');
+let matrixInterval = null;
+
+function resizeMatrix() {
+    matrixCanvas.width = window.innerWidth;
+    matrixCanvas.height = window.innerHeight;
+}
+window.addEventListener('resize', resizeMatrix);
+resizeMatrix();
+
+const chars = '0123456789ABCDEFghijklmnopqrstuvwxyz<>[]{}/\\*!@#$%^&*~';
+const fontSize = 14;
+let columns = Math.floor(matrixCanvas.width / fontSize);
+let drops = Array(columns).fill(1);
+
+function drawMatrix() {
+    ctx.fillStyle = 'rgba(7, 10, 15, 0.08)';
+    ctx.fillRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+    
+    ctx.fillStyle = '#00ffc3';
+    ctx.font = fontSize + 'px "JetBrains Mono", monospace';
+    
+    for (let i = 0; i < drops.length; i++) {
+        const text = chars.charAt(Math.floor(Math.random() * chars.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+        
+        if (drops[i] * fontSize > matrixCanvas.height && Math.random() > 0.975) {
+            drops[i] = 0;
+        }
+        drops[i]++;
+    }
+}
+
+const matrixBtn = document.getElementById('matrix-btn');
+let matrixActive = false;
+
+function toggleMatrix() {
+    matrixActive = !matrixActive;
+    document.body.classList.toggle('matrix-active', matrixActive);
+    matrixBtn.classList.toggle('active', matrixActive);
+    
+    if (matrixActive) {
+        if (!matrixInterval) matrixInterval = setInterval(drawMatrix, 45);
+        playBeep(900, 0.05);
+    } else {
+        clearInterval(matrixInterval);
+        matrixInterval = null;
+        ctx.clearRect(0, 0, matrixCanvas.width, matrixCanvas.height);
+        playBeep(400, 0.05);
+    }
+}
+
+matrixBtn.addEventListener('click', toggleMatrix);
+// Start matrix by default subtly
+matrixInterval = setInterval(drawMatrix, 50);
+
+// Terminal Logic & Commands
+const logContainer = document.getElementById('terminal-log');
+const cmdInput = document.getElementById('cmd-input');
+const terminalBody = document.getElementById('terminal-body');
+
+const COMMANDS = {
+    'help': () => `Available commands:
+  • <span style="color: var(--accent);">whoami</span>    - Print user information
+  • <span style="color: var(--accent);">skills</span>    - Display technical skill set
+  • <span style="color: var(--accent);">projects</span>  - List web apps & games
+  • <span style="color: var(--accent);">contact</span>   - Show contact channels
+  • <span style="color: var(--accent);">matrix</span>    - Toggle matrix background effect
+  • <span style="color: var(--accent);">clear</span>     - Clear terminal screen
+  • <span style="color: var(--accent);">flag</span>      - Hints for CTF adventurers`,
+
+    'whoami': () => `User: tako
+Role: CTF Player | OSINT Specialist | Security Researcher
+Bio: Reverse engineering binaries for fun. Exploring security surfaces & building clean web tools.`,
+
+    'skills': () => `[+] Skills Matrix:
+  - Reverse Engineering : Ghidra, GDB, radare2, x64dbg
+  - OSINT               : GEOINT, SOCMINT, Footprinting
+  - Offensive Security  : Web Exploitation, Cryptography, Pwn
+  - Stack               : C/C++, Python, JS, Linux Systems`,
+
+    'projects': () => `[+] Projects & Web Apps:
+  1. REFRACT     - Laser Optics Puzzle Game (/myscienceproject)
+  2. Polytrack   - Low-poly 3D Racing Engine (/polytrack)
+  3. .Txt Editor - Minimalist Text Notepad (/text)
+  4. CTF Vault   - Challenges & Hidden Flags (/robots.txt)`,
+
+    'contact': () => `[+] Contact Channels:
+  • Email     : takoyaki135355@gmail.com
+  • GitHub    : github.com/takoyaki135355
+  • Discord   : 0xdeadbeef____
+  • WhatsApp  : +60 17-415 1822
+  • PGP Key   : 6530 59AF A1DE F4B7 5FFD 3425 986E 3B33 5666 A15E`,
+
+    'matrix': () => {
+        toggleMatrix();
+        return `Matrix effect ${matrixActive ? 'ENABLED' : 'DISABLED'}.`;
+    },
+
+    'flag': () => `Looking for flags? 
+Hint: Check HTML source comments, /robots.txt, and secret paths.
+Flag format: tako{...} or sudokys{...}`,
+
+    'clear': () => {
+        logContainer.innerHTML = '';
+        return null;
+    }
+};
+
+function appendLog(lineHtml) {
+    if (lineHtml === null) return;
+    const div = document.createElement('div');
+    div.className = 'terminal-line';
+    div.innerHTML = lineHtml;
+    logContainer.appendChild(div);
+    terminalBody.scrollTop = terminalBody.scrollHeight;
+}
+
+// Initial typewriter intro in terminal
+const introText = "whoami";
+let i = 0;
+
+function runIntro() {
+    const introPrompt = document.createElement('div');
+    introPrompt.className = 'terminal-line';
+    introPrompt.innerHTML = `<span style="color: var(--accent);">tako@web:~$</span> <span id="intro-typed"></span><span class="cursor"></span>`;
+    logContainer.appendChild(introPrompt);
+    
+    const target = document.getElementById('intro-typed');
+    
+    function typeStep() {
+        if (i < introText.length) {
+            target.textContent += introText.charAt(i);
+            i++;
+            playBeep(400 + i * 50, 0.02, 'triangle');
+            setTimeout(typeStep, 90);
+        } else {
+            setTimeout(() => {
+                const cursor = introPrompt.querySelector('.cursor');
+                if (cursor) cursor.remove();
+                appendLog(COMMANDS['whoami']());
+                appendLog(`<div style="color: var(--muted); margin-top: 0.5rem;">Tip: Type <span style="color: var(--accent);">help</span> to see interactive terminal commands.</div>`);
+            }, 300);
+        }
+    }
+    typeStep();
+}
+
+runIntro();
+
+// Command Input Handler
+cmdInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        const rawCmd = cmdInput.value.trim();
+        cmdInput.value = '';
+        
+        if (!rawCmd) return;
+        
+        playBeep(700, 0.04);
+        
+        // Print prompt
+        appendLog(`<span style="color: var(--accent);">tako@web:~$</span> ${escapeHtml(rawCmd)}`);
+        
+        const cleanCmd = rawCmd.toLowerCase();
+        if (COMMANDS[cleanCmd]) {
+            const res = COMMANDS[cleanCmd]();
+            if (res) appendLog(res);
+        } else {
+            appendLog(`<span style="color: var(--danger);">command not found: ${escapeHtml(rawCmd)}. Type 'help' for available commands.</span>`);
+        }
+    }
+});
+
+function escapeHtml(str) {
+    return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+// Click anywhere on terminal body to focus input
+document.getElementById('terminal').addEventListener('click', () => {
+    cmdInput.focus();
+});
 </script>
 
 </body>

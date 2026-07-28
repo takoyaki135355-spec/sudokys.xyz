@@ -2,19 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="icon" type="image/png" href="/admin/assets/favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>contact | tako</title>
+<meta name="description" content="Contact information for Tako - Email, GitHub, Discord, WhatsApp and PGP Key.">
 
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root {
-    --bg: #0a0f14;
-    --card: #111821;
-    --text: #d6e2f0;
+    --bg: #070a0f;
+    --card: #111823;
+    --card-border: rgba(0, 255, 195, 0.15);
+    --text: #e2ebf5;
+    --text-dim: #94a3b8;
     --accent: #00ffc3;
-    --muted: #5c6b7a;
+    --accent-glow: rgba(0, 255, 195, 0.25);
+    --muted: #475569;
+    --radius: 12px;
 }
 
 * {
@@ -27,18 +34,49 @@ body {
     font-family: "JetBrains Mono", monospace;
     background: var(--bg);
     color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
-    padding: 1.5rem 2rem;
+    padding: 1.25rem 2rem;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(7, 10, 15, 0.8);
+    backdrop-filter: blur(12px);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.logo {
+    text-decoration: none;
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
 }
 
 nav a {
     text-decoration: none;
-    color: var(--muted);
+    color: var(--text-dim);
     margin-left: 1.5rem;
+    font-size: 0.9rem;
+    transition: color 0.2s ease;
 }
 
 nav a:hover {
@@ -46,140 +84,345 @@ nav a:hover {
 }
 
 .container {
-    max-width: 700px;
-    margin: 6rem auto;
-    padding: 0 2rem;
+    max-width: 720px;
+    margin: 4rem auto;
+    padding: 0 1.5rem;
+    width: 100%;
+    flex-grow: 1;
 }
 
 .card {
     background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
     padding: 2.5rem;
-    border-radius: 8px;
-    box-shadow: 0 0 20px rgba(0,255,195,0.08);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 25px rgba(0, 255, 195, 0.05);
 }
 
 h1 {
+    font-size: 1.8rem;
+    color: #fff;
     margin-bottom: 2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+h1::before {
+    content: ">";
+    color: var(--accent);
+}
+
+.contact-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
 }
 
 .contact-item {
-    margin-bottom: 1.5rem;
+    background: rgba(10, 14, 23, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.25rem 1.5rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    transition: border-color 0.2s ease;
+}
+
+.contact-item:hover {
+    border-color: rgba(0, 255, 195, 0.3);
+}
+
+.contact-info {
+    flex-grow: 1;
+    overflow: hidden;
 }
 
 .label {
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
 }
 
 .value {
-    font-size: 1rem;
-    margin-top: 0.3rem;
+    font-size: 0.95rem;
+    color: #fff;
+    word-break: break-all;
 }
 
 .value a {
     color: var(--accent);
     text-decoration: none;
-}
-
-.value a:hover {
-    text-decoration: underline;
-}
-
-.pgp-button {
-    display: inline-block;
-    padding: 0.6rem 1.2rem;
-    background: var(--accent);
-    color: #000;
-    border-radius: 6px;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 0.9rem;
     transition: opacity 0.2s ease;
 }
 
-/* Override the .value a rule specifically for the button */
-.value a.pgp-button {
-    color: #000;
+.value a:hover {
+    opacity: 0.85;
+    text-decoration: underline;
 }
 
-.pgp-button:hover {
-    opacity: 0.85;
+.btn-group {
+    display: flex;
+    gap: 0.5rem;
+    align-shrink: 0;
+}
+
+.action-btn {
+    background: rgba(0, 255, 195, 0.1);
+    color: var(--accent);
+    border: 1px solid rgba(0, 255, 195, 0.25);
+    padding: 0.45rem 0.85rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.8rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
     text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.action-btn:hover {
+    background: var(--accent);
+    color: #000;
+    box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.pgp-box {
+    margin-top: 1rem;
+    background: #080c12;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 1rem;
+    display: none;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    max-height: 240px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.pgp-box.active {
+    display: block;
+}
+
+/* Toast notification */
+.toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--accent);
+    color: #000;
+    font-weight: 600;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 100;
+}
+
+.toast.show {
+    transform: translateY(0);
+    opacity: 1;
 }
 
 footer {
     text-align: center;
-    padding: 3rem 1rem;
+    padding: 2.5rem 1rem;
     color: var(--muted);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 600px) {
+    .contact-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .btn-group {
+        margin-top: 0.5rem;
+        width: 100%;
+    }
+    .action-btn {
+        flex: 1;
+        justify-content: center;
+    }
 }
 </style>
-
 </head>
 
 <body>
 
 <header>
-    <div>tako</div>
+    <a href=".." class="logo">
+        <span class="logo-dot"></span>
+        <span>tako</span>
+    </a>
     <nav>
         <a href="..">home</a>
-        
     </nav>
 </header>
 
 <div class="container">
     <div class="card">
-        <h1>contact()</h1>
+        <h1>contact_channels()</h1>
 
-        <div class="contact-item">
-            <div class="label">email</div>
-            <div class="value">
-                <a href="mailto:takoyaki135355@gmail.com">takoyaki135355@gmail.com</a>
-            </div>
-        </div>
-
-        <div class="contact-item">
-            <div class="label">github</div>
-            <div class="value">
-                <a href="https://github.com/takoyaki135355" target="_blank">
-                    github.com/takoyaki135355
-                </a>
-            </div>
-        </div>
-
-        <div class="contact-item">
-            <div class="label">discord</div>
-            <div class="value">
-                0xdeadbeef____
-            </div>
-        </div>
-         <div class="contact-item">
-                    <div class="label">whatsapp</div>
+        <div class="contact-grid">
+            
+            <div class="contact-item">
+                <div class="contact-info">
+                    <div class="label">email</div>
                     <div class="value">
-                        +60 17-415 1822
+                        <a href="mailto:takoyaki135355@gmail.com" id="val-email">takoyaki135355@gmail.com</a>
                     </div>
                 </div>
-        
+                <div class="btn-group">
+                    <button class="action-btn" onclick="copyText('takoyaki135355@gmail.com', 'Email')">📋 Copy</button>
+                </div>
+            </div>
+
             <div class="contact-item">
-    <div class="label">pgp</div>
-    <div class="value">
-        FINGERPRINT: 6530 59AF A1DE F4B7 5FFD 3425 986E 3B33 5666 A15E
-        <div style="margin-top: 1rem;">
-            <a href="./publickey.asc" download class="pgp-button">
-                Download PGP
-            </a>
+                <div class="contact-info">
+                    <div class="label">github</div>
+                    <div class="value">
+                        <a href="https://github.com/takoyaki135355" target="_blank" rel="noopener">github.com/takoyaki135355</a>
+                    </div>
+                </div>
+                <div class="btn-group">
+                    <a href="https://github.com/takoyaki135355" target="_blank" rel="noopener" class="action-btn">🔗 Visit</a>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-info">
+                    <div class="label">discord</div>
+                    <div class="value" id="val-discord">0xdeadbeef____</div>
+                </div>
+                <div class="btn-group">
+                    <button class="action-btn" onclick="copyText('0xdeadbeef____', 'Discord handle')">📋 Copy</button>
+                </div>
+            </div>
+
+            <div class="contact-item">
+                <div class="contact-info">
+                    <div class="label">whatsapp</div>
+                    <div class="value" id="val-wa">+60 17-415 1822</div>
+                </div>
+                <div class="btn-group">
+                    <button class="action-btn" onclick="copyText('+60174151822', 'WhatsApp number')">📋 Copy</button>
+                </div>
+            </div>
+
+            <div class="contact-item" style="flex-direction: column; align-items: stretch;">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                    <div class="contact-info">
+                        <div class="label">pgp fingerprint</div>
+                        <div class="value" style="font-size: 0.85rem; letter-spacing: 0.5px;">
+                            6530 59AF A1DE F4B7 5FFD 3425 986E 3B33 5666 A15E
+                        </div>
+                    </div>
+                    <div class="btn-group">
+                        <button class="action-btn" onclick="togglePgp()">👁️ View</button>
+                        <a href="./publickey.asc" download class="action-btn">⬇️ Key</a>
+                    </div>
+                </div>
+
+                <div class="pgp-box" id="pgp-box">-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+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
+=DsOS
+-----END PGP PUBLIC KEY BLOCK-----</div>
+            </div>
+
         </div>
     </div>
 </div>
 
-        </div>
-
-    </div>
-</div>
+<div class="toast" id="toast">Copied to clipboard!</div>
 
 <footer>
-    minimal surface area.
+    minimal surface area · security verified
 </footer>
+
+<script>
+function copyText(text, label) {
+    navigator.clipboard.writeText(text).then(() => {
+        showToast(`Copied ${label}!`);
+    }).catch(() => {
+        showToast(`Failed to copy.`);
+    });
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 2000);
+}
+
+function togglePgp() {
+    const box = document.getElementById('pgp-box');
+    box.classList.toggle('active');
+}
+</script>
 
 </body>
 </html>
