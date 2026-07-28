@@ -4,40 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABS0lEQVRYR+2XwUoCURSGR0vcCgX5CO59CheBLxAF4SrCpZAVgrgIxNoUVFvfoBcIeoHC9oGbdBmtTNC+H67gpvTMNN6EufAxM8yc8//3nBnu3FQQBCk4gSPIu2sOsY0pmQdwAy2Jn0IzNrnfE5/JwLubuQ8PAxmYrKDsP01uKgPqibeRGEgqsIYV+GPL9nQdvtgcVOEz+tdrM7CB4AOU4A324SmaCZsBaSlCy9YFZKEN5/AVzojdwEynwEkXivAMe/BqNxHegLQy0IAajKEOV6DVZckRzYBEKnAJm64VaslKDOwgdA+70HMteFly2nOPhatAmQy3sO1mr9KP7OKKsBnQ03dwCH04gMdwwrMomwFFqd9bcAwf0cTtFVBE2vaSLbJor8CijMb7iYGkAv+iAt43Jt63Zt43p3oPtJzoP0drnK7jHNoKDuEaWt87DknNX2GRnwAAABBkZUJHNzlBRDdFQjFGRjY1NTI4NVhXA3EAAAAASUVORUSCYII=">
-
 <title>.Txt</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-
 <style>
 :root {
-  --bg-color: #ffffff;
-  --text-color: #1e1e1e;
-  --muted-color: #999999;
-  --border-color: #e5e5e5;
-  --accent-color: #10b981;
+  /* Catppuccin Latte (light) */
+  --bg-color: #eff1f5;
+  --text-color: #4c4f69;
+  --muted-color: #9ca0b0;
+  --border-color: #ccd0da;
+  --accent-color: #40a02b;
   --font-family: Georgia, serif;
 }
-
 body.dark {
-  --bg-color: #12161f;
-  --text-color: #d4dbe5;
-  --muted-color: #5a6a7a;
-  --border-color: rgba(255, 255, 255, 0.07);
-  --accent-color: #34d399;
+  /* Catppuccin Mocha (dark) */
+  --bg-color: #1e1e2e;
+  --text-color: #cdd6f4;
+  --muted-color: #6c7086;
+  --border-color: rgba(205, 214, 244, 0.09);
+  --accent-color: #a6e3a1;
 }
-
 body.code-mode {
   --font-family: 'JetBrains Mono', monospace;
 }
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
-
 body {
   font-family: var(--font-family);
   background: var(--bg-color);
@@ -47,7 +43,6 @@ body {
   height: 100vh;
   transition: background 0.25s ease, color 0.25s ease;
 }
-
 header {
   padding: 0.8rem 1.5rem;
   display: flex;
@@ -55,7 +50,6 @@ header {
   align-items: center;
   border-bottom: 1px solid var(--border-color);
 }
-
 .brand {
   font-family: 'JetBrains Mono', monospace;
   font-weight: 700;
@@ -64,13 +58,11 @@ header {
   color: var(--text-color);
   letter-spacing: -0.5px;
 }
-
 .controls {
   display: flex;
   align-items: center;
   gap: 0.3rem;
 }
-
 /* Minimal Buttons */
 .btn {
   background: transparent;
@@ -86,16 +78,13 @@ header {
   align-items: center;
   gap: 0.3rem;
 }
-
 .btn:hover {
   color: var(--text-color);
   background: rgba(128, 128, 128, 0.1);
 }
-
 .btn.active {
   color: var(--accent-color);
 }
-
 .mode-toggle {
   background: rgba(128, 128, 128, 0.08);
   border: 1px solid var(--border-color);
@@ -104,7 +93,6 @@ header {
   display: flex;
   gap: 0.2rem;
 }
-
 .mode-btn {
   background: transparent;
   border: none;
@@ -116,13 +104,11 @@ header {
   cursor: pointer;
   transition: all 0.2s ease;
 }
-
 .mode-btn.active {
   background: var(--text-color);
   color: var(--bg-color);
   font-weight: 600;
 }
-
 .editor-container {
   flex-grow: 1;
   width: 85%;
@@ -132,7 +118,6 @@ header {
   flex-direction: column;
   position: relative;
 }
-
 #editor {
   flex-grow: 1;
   width: 100%;
@@ -149,18 +134,15 @@ header {
   white-space: pre-wrap;
   word-break: break-word;
 }
-
 #editor:empty::before {
   content: attr(data-placeholder);
   color: var(--muted-color);
   pointer-events: none;
   opacity: 0.6;
 }
-
 body.code-mode #editor {
   display: none;
 }
-
 .lang-selector {
   display: none;
   background: transparent;
@@ -172,11 +154,9 @@ body.code-mode #editor {
   border-radius: 4px;
   outline: none;
 }
-
 body.code-mode .lang-selector {
   display: block;
 }
-
 .CodeMirror {
   display: none;
   height: 100%;
@@ -184,12 +164,10 @@ body.code-mode .lang-selector {
   font-size: 1.1rem;
   background: transparent !important;
 }
-
 body.code-mode .CodeMirror {
   display: block;
   flex-grow: 1;
 }
-
 .CodeMirror-hints {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.85rem;
@@ -201,45 +179,60 @@ body.code-mode .CodeMirror {
   color: var(--text-color) !important;
   overflow: hidden;
 }
-
 .CodeMirror-hint {
   padding: 6px 12px !important;
   color: var(--text-color) !important;
   border-radius: 0 !important;
   cursor: pointer;
 }
-
 .CodeMirror-hint-active {
   background: var(--accent-color) !important;
-  color: #ffffff !important;
+  color: #1e1e2e !important;
 }
-
 body.dark .CodeMirror-hint-active {
-  color: #12161f !important;
+  color: #11111b !important;
 }
-
 /* Theme Integration Overrides */
 body.dark .CodeMirror-gutters {
   background: transparent !important;
   border-right: 1px solid var(--border-color) !important;
 }
-
 body.dark .CodeMirror-linenumber {
   color: var(--muted-color) !important;
 }
-
-/* Syntax Highlighting Explicit Colors for Dark Mode */
-body.dark .cm-s-dracula.CodeMirror { color: #ffffff !important; }
-body.dark .cm-s-dracula .cm-variable { color: #ffffff !important; } /* Raw text / variables */
-body.dark .cm-s-dracula .cm-builtin { color: #00e5ff !important; font-weight: 500; } /* Valid built-ins like print() */
-body.dark .cm-s-dracula .cm-keyword { color: #ff5c93 !important; font-weight: 500; } /* if, else, def */
-body.dark .cm-s-dracula .cm-def { color: #34d399 !important; } /* Function definitions */
-body.dark .cm-s-dracula .cm-string { color: #facc15 !important; } /* Strings */
-body.dark .cm-s-dracula .cm-number { color: #a78bfa !important; } /* Numbers */
-body.dark .cm-s-dracula .cm-operator { color: #94a3b8 !important; } /* Operators */
-body.dark .cm-s-dracula .cm-comment { color: #5a6a7a !important; font-style: italic; } /* Comments */
-body.dark .cm-s-dracula .cm-property { color: #38bdf8 !important; } /* Object properties */
-
+body.dark .CodeMirror-cursor {
+  border-left: 1px solid var(--text-color) !important;
+}
+body.dark .CodeMirror-selected {
+  background: rgba(137, 180, 250, 0.15) !important;
+}
+/* Syntax Highlighting — Catppuccin Mocha */
+body.dark .cm-s-dracula.CodeMirror { background: transparent !important; color: #cdd6f4 !important; }
+body.dark .cm-s-dracula .cm-variable { color: #cdd6f4 !important; } /* Text */
+body.dark .cm-s-dracula .cm-builtin { color: #89dceb !important; font-weight: 500; } /* Sky */
+body.dark .cm-s-dracula .cm-keyword { color: #cba6f7 !important; font-weight: 500; } /* Mauve */
+body.dark .cm-s-dracula .cm-def { color: #89b4fa !important; } /* Blue */
+body.dark .cm-s-dracula .cm-string { color: #a6e3a1 !important; } /* Green */
+body.dark .cm-s-dracula .cm-number { color: #fab387 !important; } /* Peach */
+body.dark .cm-s-dracula .cm-operator { color: #94e2d5 !important; } /* Teal */
+body.dark .cm-s-dracula .cm-comment { color: #6c7086 !important; font-style: italic; } /* Overlay0 */
+body.dark .cm-s-dracula .cm-property { color: #74c7ec !important; } /* Sapphire */
+body.dark .cm-s-dracula .cm-atom { color: #fab387 !important; } /* Peach */
+body.dark .cm-s-dracula .cm-tag { color: #f38ba8 !important; } /* Red */
+/* Syntax Highlighting — Catppuccin Latte */
+body:not(.dark) .cm-s-default.CodeMirror { background: transparent !important; color: #4c4f69 !important; }
+body:not(.dark) .CodeMirror-gutters { background: transparent !important; border-right: 1px solid var(--border-color) !important; }
+body:not(.dark) .CodeMirror-linenumber { color: var(--muted-color) !important; }
+body:not(.dark) .cm-s-default .cm-variable { color: #4c4f69 !important; }
+body:not(.dark) .cm-s-default .cm-builtin { color: #04a5e5 !important; font-weight: 500; } /* Sky */
+body:not(.dark) .cm-s-default .cm-keyword { color: #8839ef !important; font-weight: 500; } /* Mauve */
+body:not(.dark) .cm-s-default .cm-def { color: #1e66f5 !important; } /* Blue */
+body:not(.dark) .cm-s-default .cm-string { color: #40a02b !important; } /* Green */
+body:not(.dark) .cm-s-default .cm-number { color: #fe640b !important; } /* Peach */
+body:not(.dark) .cm-s-default .cm-operator { color: #179299 !important; } /* Teal */
+body:not(.dark) .cm-s-default .cm-comment { color: #9ca0b0 !important; font-style: italic; } /* Overlay0 */
+body:not(.dark) .cm-s-default .cm-property { color: #209fb5 !important; } /* Sapphire */
+body:not(.dark) .cm-s-default .cm-tag { color: #d20f39 !important; } /* Red */
 footer {
   padding: 0.5rem 1.5rem;
   border-top: 1px solid var(--border-color);
@@ -250,27 +243,22 @@ footer {
   justify-content: space-between;
   align-items: center;
 }
-
 .footer-left {
   display: flex;
   gap: 1.2rem;
   align-items: center;
 }
-
 .pos-indicator {
   color: var(--muted-color);
 }
-
 .code-indicator {
   display: none;
   color: var(--accent-color);
   font-size: 0.75rem;
 }
-
 body.code-mode .code-indicator {
   display: inline;
 }
-
 @media (max-width: 640px) {
   header, footer {
     padding: 0.6rem 1rem;
@@ -290,10 +278,8 @@ body.code-mode .code-indicator {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/anyword-hint.min.js"></script>
 </head>
 <body class="dark">
-
 <header>
   <a href="/" class="brand">.Txt</a>
-
   <div class="controls">
     <div class="mode-toggle">
       <button class="mode-btn active" id="textModeBtn">Text</button>
@@ -309,12 +295,10 @@ body.code-mode .code-indicator {
     <button class="btn" id="clearBtn" title="Clear text">Clear</button>
   </div>
 </header>
-
 <div class="editor-container">
   <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing your notes here...">The quick brown fox jumps over the lazy dog.</div>
   <textarea id="codeEditor"></textarea>
 </div>
-
 <footer>
   <div class="footer-left">
     <span class="pos-indicator" id="posIndicator">Ln 1, Col 1</span>
@@ -324,7 +308,6 @@ body.code-mode .code-indicator {
   </div>
   <div>Auto-saved</div>
 </footer>
-
 <script>
 const editor = document.getElementById('editor');
 const codeEditorTextarea = document.getElementById('codeEditor');
@@ -337,10 +320,8 @@ const clearBtn = document.getElementById('clearBtn');
 const posIndicator = document.getElementById('posIndicator');
 const charCount = document.getElementById('charCount');
 const wordCount = document.getElementById('wordCount');
-
 let isCodeMode = false;
 let isDark = true;
-
 // Initialize CodeMirror
 const cm = CodeMirror.fromTextArea(codeEditorTextarea, {
   lineNumbers: true,
@@ -348,26 +329,22 @@ const cm = CodeMirror.fromTextArea(codeEditorTextarea, {
   theme: 'dracula',
   extraKeys: {"Ctrl-Space": "autocomplete"}
 });
-
 cm.on("inputRead", function(instance, change) {
   if (change.text[0].match(/\w/)) {
     cm.showHint({hint: CodeMirror.hint.anyword, completeSingle: false});
   }
 });
-
 cm.on('change', () => {
   if (!isCodeMode) return;
   const val = cm.getValue();
   localStorage.setItem('tako_txt_content', val);
   updateStats();
 });
-
 cm.on('cursorActivity', () => {
   if (!isCodeMode) return;
   const cursor = cm.getCursor();
   posIndicator.textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
 });
-
 // Load saved content & settings
 const savedText = localStorage.getItem('tako_txt_content');
 if (savedText) {
@@ -375,14 +352,11 @@ if (savedText) {
   cm.setValue(savedText);
 }
 updateStats();
-
 const savedMode = localStorage.getItem('tako_txt_mode');
 if (savedMode === 'code') setMode(true);
-
 // Mode Toggle
 textModeBtn.addEventListener('click', () => setMode(false));
 codeModeBtn.addEventListener('click', () => setMode(true));
-
 function setMode(code) {
   isCodeMode = code;
   document.body.classList.toggle('code-mode', isCodeMode);
@@ -404,11 +378,9 @@ function setMode(code) {
     }
     updateCursorPos();
   }
-
   localStorage.setItem('tako_txt_mode', isCodeMode ? 'code' : 'text');
   updateStats();
 }
-
 // Auto save & stats for Text Mode
 ['input', 'keyup', 'mouseup', 'click', 'focus'].forEach(evt => {
   editor.addEventListener(evt, () => {
@@ -420,13 +392,11 @@ function setMode(code) {
     }
   });
 });
-
 document.addEventListener('selectionchange', () => {
   if (!isCodeMode && document.activeElement === editor) {
     updateCursorPos();
   }
 });
-
 function updateStats() {
   const text = isCodeMode ? cm.getValue() : editor.innerText.trim();
   const chars = text.length;
@@ -434,7 +404,6 @@ function updateStats() {
   charCount.textContent = `${chars} char${chars !== 1 ? 's' : ''}`;
   wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
 }
-
 function updateCursorPos() {
   const sel = window.getSelection();
   if (!sel.rangeCount) return;
@@ -444,17 +413,14 @@ function updateCursorPos() {
   const lines = textBefore.split('\n');
   const lineNum = lines.length;
   const colNum = lines[lines.length - 1].length + 1;
-
   posIndicator.textContent = `Ln ${lineNum}, Col ${colNum}`;
 }
-
 function getTextBeforeRange(container, range) {
   const preRange = range.cloneRange();
   preRange.selectNodeContents(container);
   preRange.setEnd(range.startContainer, range.startOffset);
   return preRange.toString();
 }
-
 // Theme toggle
 themeBtn.addEventListener('click', () => {
   isDark = !isDark;
@@ -462,7 +428,6 @@ themeBtn.addEventListener('click', () => {
   themeBtn.textContent = isDark ? 'Light' : 'Dark';
   cm.setOption('theme', isDark ? 'dracula' : 'default');
 });
-
 // Download .txt / code file
 downloadBtn.addEventListener('click', () => {
   const text = isCodeMode ? cm.getValue() : editor.innerText;
@@ -476,7 +441,6 @@ downloadBtn.addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(url);
 });
-
 // Clear
 clearBtn.addEventListener('click', () => {
   if (confirm('Clear editor content?')) {
@@ -492,9 +456,7 @@ clearBtn.addEventListener('click', () => {
     }
   }
 });
-
 if (!isCodeMode) updateCursorPos();
 </script>
-
 </body>
 </html>
