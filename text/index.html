@@ -228,6 +228,18 @@ body.dark .CodeMirror-linenumber {
   color: var(--muted-color) !important;
 }
 
+/* Syntax Highlighting Explicit Colors for Dark Mode */
+body.dark .cm-s-dracula.CodeMirror { color: var(--text-color) !important; }
+body.dark .cm-s-dracula .cm-variable { color: var(--text-color) !important; } /* Raw text / variables */
+body.dark .cm-s-dracula .cm-builtin { color: #00e5ff !important; font-weight: 500; } /* Valid built-ins like print() */
+body.dark .cm-s-dracula .cm-keyword { color: #ff5c93 !important; font-weight: 500; } /* if, else, def */
+body.dark .cm-s-dracula .cm-def { color: #34d399 !important; } /* Function definitions */
+body.dark .cm-s-dracula .cm-string { color: #facc15 !important; } /* Strings */
+body.dark .cm-s-dracula .cm-number { color: #a78bfa !important; } /* Numbers */
+body.dark .cm-s-dracula .cm-operator { color: #94a3b8 !important; } /* Operators */
+body.dark .cm-s-dracula .cm-comment { color: #5a6a7a !important; font-style: italic; } /* Comments */
+body.dark .cm-s-dracula .cm-property { color: #38bdf8 !important; } /* Object properties */
+
 footer {
   padding: 0.5rem 1.5rem;
   border-top: 1px solid var(--border-color);
