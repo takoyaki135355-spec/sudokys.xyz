@@ -8,23 +8,24 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles.css">
 
 <style>
 :root {
-    --bg: #0f0a08;
-    --card: #1a120e;
-    --border: rgba(212, 175, 55, 0.35);
-    --text: #f5f0e6;
-    --text-dim: #c5b299;
+    --bg: #fff2e7;
+    --card: #fff9f4;
+    --border: rgba(63, 34, 0, 0.15);
+    --text: #3f2200;
+    --text-dim: #7c5226;
     --danger: #d94025;
-    --accent: #d4af37;
-    --accent-glow: rgba(212, 175, 55, 0.38);
+    --accent: #c8963e;
+    --accent-glow: rgba(200, 150, 62, 0.25);
     --warning: #ffb300;
-    --muted: #7d6b58;
+    --muted: #a08162;
     --font-mono: 'JetBrains Mono', monospace;
     --font-sans: 'Outfit', sans-serif;
+    --font-serif: 'Le Jour Serif', 'Bodoni Moda', 'Playfair Display', serif;
 }
 
 body {
@@ -40,32 +41,22 @@ body {
     overflow: hidden;
 }
 
-.scanlines {
-    position: fixed;
-    inset: 0;
-    background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
-    background-size: 100% 4px;
-    z-index: 2;
-    pointer-events: none;
-    opacity: 0.65;
-}
-
 .portal-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 2.5rem;
+    padding: 2.8rem;
     width: 100%;
     max-width: 540px;
-    box-shadow: 0 0 35px rgba(212, 175, 55, 0.15), inset 0 0 20px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 20px 45px rgba(63, 34, 0, 0.08);
     position: relative;
     z-index: 10;
     transition: all 0.35s ease;
 }
 
 .portal-card.granted {
-    border-color: rgba(212, 175, 55, 0.65);
-    box-shadow: 0 0 45px rgba(212, 175, 55, 0.3), inset 0 0 20px rgba(0, 0, 0, 0.6);
+    border-color: rgba(200, 150, 62, 0.65);
+    box-shadow: 0 20px 50px rgba(200, 150, 62, 0.2);
 }
 
 .header {
@@ -73,13 +64,13 @@ body {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 2rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    border-bottom: 1px solid rgba(63, 34, 0, 0.1);
     padding-bottom: 1rem;
 }
 
 .badge {
     font-size: 0.75rem;
-    background: rgba(217, 64, 37, 0.15);
+    background: rgba(217, 64, 37, 0.12);
     color: var(--danger);
     border: 1px solid var(--danger);
     padding: 0.25rem 0.65rem;
@@ -90,30 +81,30 @@ body {
 }
 
 .badge.granted {
-    background: rgba(212, 175, 55, 0.18);
+    background: rgba(200, 150, 62, 0.15);
     color: var(--accent);
     border-color: var(--accent);
 }
 
 .title {
-    font-family: var(--font-sans);
-    font-size: 1.25rem;
-    color: #fff;
+    font-family: var(--font-serif);
+    font-size: 1.35rem;
+    color: var(--text);
     font-weight: 700;
 }
 
-.terminal-box {
-    background: #090604;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+.log-box {
+    background: #fff2e7;
+    border: 1px solid rgba(63, 34, 0, 0.12);
     border-radius: 6px;
     padding: 1.25rem;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     min-height: 150px;
     max-height: 220px;
     margin-bottom: 1.5rem;
     overflow-y: auto;
     line-height: 1.5;
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
 }
 
 .line {
@@ -121,10 +112,10 @@ body {
     word-break: break-all;
 }
 
-.line-danger { color: var(--danger); }
-.line-success { color: var(--accent); }
-.line-warn { color: var(--warning); }
-.line-muted { color: var(--muted); }
+.line-danger { color: var(--danger); font-weight: 600; }
+.line-success { color: var(--accent); font-weight: 700; }
+.line-warn { color: var(--accent); font-weight: 600; }
+.line-muted { color: var(--text-dim); }
 
 .input-row {
     display: flex;
@@ -133,13 +124,13 @@ body {
 
 .input-field {
     flex-grow: 1;
-    background: #090604;
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    font-family: var(--font-mono);
-    font-size: 0.9rem;
+    background: #fff2e7;
+    border: 1px solid rgba(63, 34, 0, 0.15);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
     padding: 0.75rem 1rem;
-    border-radius: 4px;
+    border-radius: 6px;
     outline: none;
     transition: border-color 0.2s ease;
 }
@@ -150,12 +141,12 @@ body {
 }
 
 .btn {
-    background: var(--danger);
-    color: #fff;
+    background: var(--text);
+    color: var(--bg);
     border: none;
     padding: 0.75rem 1.25rem;
-    border-radius: 4px;
-    font-family: var(--font-mono);
+    border-radius: 6px;
+    font-family: var(--font-sans);
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -163,14 +154,14 @@ body {
 }
 
 .btn:hover {
-    opacity: 0.9;
-    box-shadow: 0 0 15px rgba(217, 64, 37, 0.4);
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 4px 15px var(--accent-glow);
 }
 
 .btn.granted {
     background: var(--accent);
-    color: #0f0a08;
-    box-shadow: 0 0 15px var(--accent-glow);
+    color: #fff;
 }
 
 .back-link {
@@ -178,7 +169,7 @@ body {
     text-align: center;
     margin-top: 1.5rem;
     color: var(--text-dim);
-    font-size: 0.85rem;
+    font-size: 0.88rem;
     text-decoration: none;
     transition: color 0.2s ease;
     font-weight: 600;
@@ -192,15 +183,13 @@ body {
 
 <body>
 
-<div class="scanlines"></div>
-
-<div class="portal-card hud-corner" id="card">
+<div class="portal-card" id="card">
     <div class="header">
-        <div class="title glitch" data-text="tako-OS Security Portal">tako-OS Security Portal</div>
+        <div class="title">Security Portal</div>
         <div class="badge" id="badge">RESTRICTED</div>
     </div>
 
-    <div class="terminal-box" id="log-box">
+    <div class="log-box" id="log-box">
         <div class="line line-warn">[SYSTEM ALERT] Unauthorized access attempts are monitored and logged.</div>
         <div class="line line-muted">Gateway Node: admin.sudokys.xyz v3.1</div>
         <div class="line">Please enter administrator passkey to authenticate:</div>
@@ -209,7 +198,7 @@ body {
     <form id="auth-form" onsubmit="handleAuth(event)">
         <div class="input-row">
             <input type="password" class="input-field" id="passkey" placeholder="Enter passkey or flag..." autocomplete="off" autofocus>
-            <button type="submit" class="btn" id="sub-btn">[AUTH]</button>
+            <button type="submit" class="btn" id="sub-btn">AUTHENTICATE</button>
         </div>
     </form>
 
@@ -225,22 +214,6 @@ const passkeyInput = document.getElementById('passkey');
 
 const VALID_KEYS = ['Prince123233321'];
 
-function playBeep(freq = 600, type = 'sine') {
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.08);
-    } catch(e) {}
-}
-
 function appendLog(text, className = '') {
     const div = document.createElement('div');
     div.className = 'line ' + className;
@@ -255,13 +228,11 @@ function handleAuth(e) {
     if (!val) return;
 
     passkeyInput.value = '';
-    playBeep(700);
-    appendLog(`> AUTHENTICATING TARGET TOKEN: "${val.replace(/./g, '*')}"...`);
+    appendLog(`> Authenticating target token: "${val.replace(/./g, '*')}"...`);
 
     setTimeout(() => {
         const lower = val.toLowerCase();
         if (VALID_KEYS.some(k => lower.includes(k))) {
-            playBeep(1000, 'triangle');
             appendLog('[+] ACCESS GRANTED. Welcome back, Administrator Tako.', 'line-success');
             appendLog('[+] Session Token: 0x9f884a22b0a1d4ee', 'line-success');
             appendLog('[+] Flag verified! Good job hunter.', 'line-success');
@@ -272,7 +243,6 @@ function handleAuth(e) {
             subBtn.classList.add('granted');
             subBtn.textContent = 'UNLOCKED';
         } else {
-            playBeep(250, 'sawtooth');
             appendLog('[-] ACCESS DENIED: Invalid Security Clearance.', 'line-danger');
             appendLog(`[-] Incident logged to /var/log/auth.log [${new Date().toISOString()}]`, 'line-muted');
         }
