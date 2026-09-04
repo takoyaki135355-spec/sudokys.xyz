@@ -1,51 +1,185 @@
-/* Cyberpunk CTF Challenge Styling */
+/* Warm Editorial Design System - sudokys.xyz */
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 :root {
-    --bg: #070a0f;
-    --card: #111823;
-    --border: rgba(0, 255, 195, 0.2);
-    --text: #e2ebf5;
-    --accent: #00ffc3;
-    --danger: #ff4757;
+    --bg: #fff2e7;
+    --bg-alt: #fbf0e6;
+    --card: #fff9f4;
+    --card-border: rgba(63, 34, 0, 0.12);
+    --card-border-hover: rgba(212, 175, 55, 0.55);
+    --text: #3f2200;
+    --text-dim: #7c5226;
+    --accent: #c8963e;
+    --accent-light: #e5b742;
+    --accent-glow: rgba(200, 150, 62, 0.25);
+    --muted: #a08162;
+    --radius: 12px;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+    --font-serif: 'Le Jour Serif', 'Bodoni Moda', 'Playfair Display', serif;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
-    font-family: 'JetBrains Mono', monospace, sans-serif;
+    font-family: var(--font-sans);
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 2rem;
+    position: relative;
+    overflow-x: hidden;
+    line-height: 1.6;
+}
+
+/* Subtle Warm Ambient Background Texture */
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: 
+        radial-gradient(circle at 10% 20%, rgba(200, 150, 62, 0.05) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(63, 34, 0, 0.03) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Glitch Animation for Editorial Titles */
+.glitch {
+    position: relative;
+    display: inline-block;
+}
+
+.glitch:hover::before,
+.glitch:hover::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    clip: rect(0, 0, 0, 0);
+}
+
+.glitch:hover::before {
+    left: -2px;
+    text-shadow: 2px 0 var(--accent);
+    animation: glitch-anim-1 0.4s infinite linear alternate-reverse;
+}
+
+.glitch:hover::after {
+    left: 2px;
+    text-shadow: -2px 0 var(--text-dim);
+    animation: glitch-anim-2 0.4s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+    0% { clip: rect(10px, 9999px, 30px, 0); }
+    20% { clip: rect(40px, 9999px, 10px, 0); }
+    40% { clip: rect(25px, 9999px, 50px, 0); }
+    60% { clip: rect(60px, 9999px, 20px, 0); }
+    80% { clip: rect(15px, 9999px, 45px, 0); }
+    100% { clip: rect(50px, 9999px, 5px, 0); }
+}
+
+@keyframes glitch-anim-2 {
+    0% { clip: rect(50px, 9999px, 5px, 0); }
+    20% { clip: rect(15px, 9999px, 45px, 0); }
+    40% { clip: rect(60px, 9999px, 20px, 0); }
+    60% { clip: rect(25px, 9999px, 50px, 0); }
+    80% { clip: rect(40px, 9999px, 10px, 0); }
+    100% { clip: rect(10px, 9999px, 30px, 0); }
+}
+
+/* Card Styling */
+.editorial-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 2.2rem;
+    position: relative;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 10px 30px rgba(63, 34, 0, 0.04);
+}
+
+.editorial-card:hover {
+    border-color: var(--card-border-hover);
+    box-shadow: 0 16px 40px rgba(63, 34, 0, 0.09), 0 0 20px var(--accent-glow);
+    transform: translateY(-4px);
+}
+
+.ctf-card {
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 3rem 2.5rem;
+    max-width: 580px;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+    box-shadow: 0 25px 60px rgba(63, 34, 0, 0.12), 0 0 35px var(--accent-glow);
     text-align: center;
 }
 
 h1 {
-    font-size: 2.2rem;
-    color: var(--accent);
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--text);
     margin-bottom: 0.5rem;
-    text-shadow: 0 0 15px rgba(0, 255, 195, 0.3);
+    letter-spacing: -0.5px;
+}
+
+h1 .accent {
+    color: var(--accent);
+    text-shadow: 0 0 16px var(--accent-glow);
 }
 
 h6 {
-    font-size: 1rem;
-    color: #94a3b8;
+    font-size: 0.95rem;
+    color: var(--text-dim);
     margin-bottom: 1.5rem;
     font-weight: 400;
+    letter-spacing: 0.5px;
 }
 
 p {
-    margin-bottom: 1rem;
-    font-size: 1.1rem;
+    margin-bottom: 1.25rem;
+    font-size: 1.05rem;
+    color: var(--text);
 }
 
 #output {
     margin-top: 1.5rem;
-    font-weight: bold;
+    font-weight: 600;
     color: var(--accent);
-    background: rgba(0, 255, 195, 0.1);
-    padding: 0.75rem 1.5rem;
-    border-radius: 8px;
-    border: 1px solid var(--border);
+    background: rgba(200, 150, 62, 0.1);
+    padding: 0.85rem 1.5rem;
+    border-radius: 6px;
+    border: 1px solid var(--card-border);
+    display: inline-block;
+    letter-spacing: 1px;
+}
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 2rem;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.88rem;
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.back-link:hover {
+    color: var(--accent);
 }

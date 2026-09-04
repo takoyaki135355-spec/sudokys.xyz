@@ -4,50 +4,52 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="/admin/assets/favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>contact | tako</title>
+<title>contact | tako@sudokys</title>
 <meta name="description" content="Contact information for Tako - Email, GitHub, Discord, WhatsApp and PGP Key.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..900;1,6..96,400..900&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles.css">
 
 <style>
 :root {
-    --bg: #070a0f;
-    --card: #111823;
-    --card-border: rgba(0, 255, 195, 0.15);
-    --text: #e2ebf5;
-    --text-dim: #94a3b8;
-    --accent: #00ffc3;
-    --accent-glow: rgba(0, 255, 195, 0.25);
-    --muted: #475569;
+    --bg: #fff2e7;
+    --card: #fff9f4;
+    --card-border: rgba(63, 34, 0, 0.12);
+    --card-border-hover: rgba(200, 150, 62, 0.55);
+    --text: #3f2200;
+    --text-dim: #7c5226;
+    --accent: #c8963e;
+    --accent-light: #e5b742;
+    --accent-glow: rgba(200, 150, 62, 0.25);
+    --muted: #a08162;
     --radius: 12px;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+    --font-mono: 'JetBrains Mono', monospace;
+    --font-sans: 'Outfit', sans-serif;
+    --font-serif: 'Le Jour Serif', 'Bodoni Moda', 'Playfair Display', serif;
 }
 
 body {
-    font-family: "JetBrains Mono", monospace;
+    font-family: var(--font-sans);
     background: var(--bg);
     color: var(--text);
     line-height: 1.6;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 header {
-    padding: 1.25rem 2rem;
+    padding: 1rem 2.2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    background: rgba(7, 10, 15, 0.8);
-    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(63, 34, 0, 0.12);
+    background: rgba(255, 242, 231, 0.92);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     position: sticky;
     top: 0;
     z-index: 50;
@@ -55,12 +57,13 @@ header {
 
 .logo {
     text-decoration: none;
-    color: #fff;
+    color: var(--text);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
+    font-family: var(--font-serif);
 }
 
 .logo-dot {
@@ -68,14 +71,22 @@ header {
     height: 8px;
     border-radius: 50%;
     background: var(--accent);
-    box-shadow: 0 0 8px var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.logo-tag {
+    color: var(--accent);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 0.95rem;
 }
 
 nav a {
     text-decoration: none;
     color: var(--text-dim);
     margin-left: 1.5rem;
-    font-size: 0.9rem;
+    font-size: 0.92rem;
+    font-weight: 600;
     transition: color 0.2s ease;
 }
 
@@ -84,55 +95,62 @@ nav a:hover {
 }
 
 .container {
-    max-width: 720px;
-    margin: 4rem auto;
+    max-width: 780px;
+    margin: 3.5rem auto;
     padding: 0 1.5rem;
     width: 100%;
     flex-grow: 1;
+    position: relative;
+    z-index: 10;
 }
 
 .card {
     background: var(--card);
     border: 1px solid var(--card-border);
     border-radius: var(--radius);
-    padding: 2.5rem;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 25px rgba(0, 255, 195, 0.05);
+    padding: 2.8rem;
+    box-shadow: 0 20px 45px rgba(63, 34, 0, 0.06);
 }
 
 h1 {
-    font-size: 1.8rem;
-    color: #fff;
+    font-family: var(--font-serif);
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text);
     margin-bottom: 2rem;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
 h1::before {
-    content: ">";
-    color: var(--accent);
+    content: "";
+    width: 24px;
+    height: 2px;
+    background: var(--accent);
 }
 
 .contact-grid {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.4rem;
 }
 
 .contact-item {
-    background: rgba(10, 14, 23, 0.6);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    padding: 1.25rem 1.5rem;
+    background: #fff2e7;
+    border: 1px solid rgba(63, 34, 0, 0.1);
+    padding: 1.35rem 1.6rem;
     border-radius: 8px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    transition: border-color 0.2s ease;
+    transition: all 0.2s ease;
 }
 
 .contact-item:hover {
-    border-color: rgba(0, 255, 195, 0.3);
+    border-color: var(--card-border-hover);
+    box-shadow: 0 4px 18px rgba(63, 34, 0, 0.08);
 }
 
 .contact-info {
@@ -142,16 +160,18 @@ h1::before {
 
 .label {
     color: var(--muted);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     text-transform: uppercase;
     letter-spacing: 1px;
     margin-bottom: 0.25rem;
+    font-weight: 700;
 }
 
 .value {
     font-size: 0.95rem;
-    color: #fff;
+    color: var(--text);
     word-break: break-all;
+    font-family: var(--font-mono);
 }
 
 .value a {
@@ -168,45 +188,48 @@ h1::before {
 .btn-group {
     display: flex;
     gap: 0.5rem;
-    align-shrink: 0;
+    flex-shrink: 0;
 }
 
 .action-btn {
-    background: rgba(0, 255, 195, 0.1);
+    background: rgba(200, 150, 62, 0.12);
     color: var(--accent);
-    border: 1px solid rgba(0, 255, 195, 0.25);
-    padding: 0.45rem 0.85rem;
+    border: 1px solid rgba(200, 150, 62, 0.3);
+    padding: 0.45rem 0.95rem;
     border-radius: 6px;
     cursor: pointer;
-    font-family: inherit;
-    font-size: 0.8rem;
-    font-weight: 600;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 700;
     transition: all 0.2s ease;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
+    letter-spacing: 0.5px;
 }
 
 .action-btn:hover {
     background: var(--accent);
-    color: #000;
-    box-shadow: 0 0 12px var(--accent-glow);
+    color: #fff;
+    box-shadow: 0 4px 14px var(--accent-glow);
 }
 
 .pgp-box {
     margin-top: 1rem;
-    background: #080c12;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
-    padding: 1rem;
+    background: #fff9f4;
+    border: 1px solid rgba(63, 34, 0, 0.15);
+    border-radius: 6px;
+    padding: 1.2rem;
     display: none;
-    font-size: 0.75rem;
+    font-size: 0.78rem;
     color: var(--text-dim);
-    max-height: 240px;
+    max-height: 250px;
     overflow-y: auto;
     white-space: pre-wrap;
     word-break: break-all;
+    font-family: var(--font-mono);
+    line-height: 1.45;
 }
 
 .pgp-box.active {
@@ -218,16 +241,17 @@ h1::before {
     position: fixed;
     bottom: 2rem;
     right: 2rem;
-    background: var(--accent);
-    color: #000;
-    font-weight: 600;
+    background: var(--text);
+    color: var(--bg);
+    font-weight: 700;
     padding: 0.75rem 1.25rem;
-    border-radius: 8px;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    border-radius: 6px;
+    box-shadow: 0 10px 25px rgba(63, 34, 0, 0.2);
     transform: translateY(100px);
     opacity: 0;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     z-index: 100;
+    font-size: 0.88rem;
 }
 
 .toast.show {
@@ -236,11 +260,14 @@ h1::before {
 }
 
 footer {
+    position: relative;
+    z-index: 10;
     text-align: center;
     padding: 2.5rem 1rem;
     color: var(--muted);
-    font-size: 0.85rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.88rem;
+    border-top: 1px solid rgba(63, 34, 0, 0.12);
+    background: rgba(255, 242, 231, 0.95);
 }
 
 @media (max-width: 600px) {
@@ -263,76 +290,76 @@ footer {
 <body>
 
 <header>
-    <a href=".." class="logo">
+    <a href=".." class="logo glitch" data-text="tako@sudokys">
         <span class="logo-dot"></span>
-        <span>tako</span>
+        <span>tako<span class="logo-tag">@sudokys</span></span>
     </a>
     <nav>
-        <a href="..">home</a>
+        <a href="..">&larr; Home</a>
     </nav>
 </header>
 
 <div class="container">
     <div class="card">
-        <h1>contact_channels()</h1>
+        <h1>Contact Channels</h1>
 
         <div class="contact-grid">
             
             <div class="contact-item">
                 <div class="contact-info">
-                    <div class="label">email</div>
+                    <div class="label">Email</div>
                     <div class="value">
                         <a href="mailto:takoyaki135355@gmail.com" id="val-email">takoyaki135355@gmail.com</a>
                     </div>
                 </div>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="copyText('takoyaki135355@gmail.com', 'Email')">📋 Copy</button>
+                    <button class="action-btn" onclick="copyText('takoyaki135355@gmail.com', 'Email')">Copy</button>
                 </div>
             </div>
 
             <div class="contact-item">
                 <div class="contact-info">
-                    <div class="label">github</div>
+                    <div class="label">GitHub</div>
                     <div class="value">
                         <a href="https://github.com/takoyaki135355" target="_blank" rel="noopener">github.com/takoyaki135355</a>
                     </div>
                 </div>
                 <div class="btn-group">
-                    <a href="https://github.com/takoyaki135355" target="_blank" rel="noopener" class="action-btn">🔗 Visit</a>
+                    <a href="https://github.com/takoyaki135355" target="_blank" rel="noopener" class="action-btn">Visit</a>
                 </div>
             </div>
 
             <div class="contact-item">
                 <div class="contact-info">
-                    <div class="label">discord</div>
+                    <div class="label">Discord</div>
                     <div class="value" id="val-discord">0xdeadbeef____</div>
                 </div>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="copyText('0xdeadbeef____', 'Discord handle')">📋 Copy</button>
+                    <button class="action-btn" onclick="copyText('0xdeadbeef____', 'Discord handle')">Copy</button>
                 </div>
             </div>
 
             <div class="contact-item">
                 <div class="contact-info">
-                    <div class="label">whatsapp</div>
+                    <div class="label">WhatsApp</div>
                     <div class="value" id="val-wa">+60 17-415 1822</div>
                 </div>
                 <div class="btn-group">
-                    <button class="action-btn" onclick="copyText('+60174151822', 'WhatsApp number')">📋 Copy</button>
+                    <button class="action-btn" onclick="copyText('+60174151822', 'WhatsApp number')">Copy</button>
                 </div>
             </div>
 
             <div class="contact-item" style="flex-direction: column; align-items: stretch;">
                 <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                     <div class="contact-info">
-                        <div class="label">pgp fingerprint</div>
+                        <div class="label">PGP Fingerprint</div>
                         <div class="value" style="font-size: 0.85rem; letter-spacing: 0.5px;">
                             6530 59AF A1DE F4B7 5FFD 3425 986E 3B33 5666 A15E
                         </div>
                     </div>
                     <div class="btn-group">
-                        <button class="action-btn" onclick="togglePgp()">👁️ View</button>
-                        <a href="./publickey.asc" download class="action-btn">⬇️ Key</a>
+                        <button class="action-btn" onclick="togglePgp()">View Key</button>
+                        <a href="./publickey.asc" download class="action-btn">Download</a>
                     </div>
                 </div>
 
@@ -397,7 +424,7 @@ poc8Z+ddYCV2yeY1ELofxUVyKvkAv8RCD2G3JpWNKOhcQkU=
 <div class="toast" id="toast">Copied to clipboard!</div>
 
 <footer>
-    minimal surface area · security verified
+    minimal surface area &middot; security verified
 </footer>
 
 <script>
@@ -415,7 +442,7 @@ function showToast(msg) {
     toast.classList.add('show');
     setTimeout(() => {
         toast.classList.remove('show');
-    }, 2000);
+    }, 2200);
 }
 
 function togglePgp() {

@@ -3,35 +3,61 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>REFRACT</title>
+<title>REFRACT | Laser Optics Puzzle | tako@sudokys</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     width: 100%; height: 100%; overflow: hidden;
-    background: #060b14;
-    font-family: 'Courier New', Courier, monospace;
+    background: #fff2e7;
+    font-family: 'Outfit', sans-serif;
     user-select: none; -webkit-user-select: none;
+    color: #3f2200;
   }
   #c { position: fixed; inset: 0; display: block; }
 
   #hud {
     position: fixed; top: 0; left: 0; right: 0; z-index: 10;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 22px 30px; pointer-events: none;
+    padding: 20px 32px; pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,242,231,0.92) 0%, rgba(255,242,231,0) 100%);
+  }
+  .hud-left {
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+    pointer-events: all;
+  }
+  .home-link {
+    color: #7c5226;
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    transition: color .15s;
+  }
+  .home-link:hover {
+    color: #c8963e;
   }
   #lv {
-    color: rgba(255,255,255,.18);
-    font-size: 10px; letter-spacing: 6px;
+    color: #c8963e;
+    font-size: 12px; letter-spacing: 4px;
+    font-weight: 800;
   }
   #rb {
-    pointer-events: all; background: transparent;
-    border: 1px solid rgba(255,255,255,.1);
-    color: rgba(255,255,255,.18);
-    font-family: inherit; font-size: 10px; letter-spacing: 3px;
-    padding: 7px 18px; cursor: pointer;
-    transition: color .15s, border-color .15s;
+    pointer-events: all; background: rgba(200, 150, 62, 0.14);
+    border: 1px solid rgba(200, 150, 62, 0.35);
+    color: #3f2200;
+    font-family: inherit; font-size: 12px; letter-spacing: 2px;
+    padding: 8px 20px; cursor: pointer; border-radius: 6px;
+    transition: all .2s; font-weight: 700;
   }
-  #rb:hover { color: rgba(255,255,255,.55); border-color: rgba(255,255,255,.3); }
+  #rb:hover {
+    background: #c8963e; color: #fff;
+    box-shadow: 0 4px 16px rgba(200, 150, 62, 0.3);
+  }
 
   #wo {
     position: fixed; inset: 0; z-index: 20;
@@ -39,34 +65,39 @@
     align-items: center; justify-content: center;
     opacity: 0; pointer-events: none;
     transition: opacity .45s ease;
+    background: rgba(255, 242, 231, 0.85);
+    backdrop-filter: blur(10px);
   }
   #wo.v { opacity: 1; }
   #wt {
-    color: #00ffcc;
-    font-size: 36px; letter-spacing: 16px;
-    text-shadow: 0 0 22px #00ffcc, 0 0 55px rgba(0,255,200,.22);
+    color: #3f2200;
+    font-family: 'Bodoni Moda', 'Playfair Display', serif;
+    font-size: 46px; font-weight: 800; letter-spacing: 12px;
+    text-shadow: 0 0 25px rgba(200,150,62,0.4);
   }
   #ws {
-    margin-top: 14px; font-size: 10px;
-    letter-spacing: 5px; color: rgba(255,255,255,.16);
+    margin-top: 14px; font-size: 12px;
+    letter-spacing: 5px; color: #7c5226;
+    font-weight: 600;
   }
 
   #sig {
-    position: fixed; bottom: 18px; left: 50%;
+    position: fixed; bottom: 20px; left: 50%;
     transform: translateX(-50%);
-    color: rgba(255,255,255,.06);
-    font-size: 9px; letter-spacing: 9px;
+    color: rgba(63,34,0,0.3);
+    font-size: 11px; letter-spacing: 8px;
     pointer-events: none; z-index: 5;
+    font-weight: 700;
   }
 
-  /* Hint text */
   #hint {
-    position: fixed; bottom: 44px; left: 50%;
+    position: fixed; bottom: 48px; left: 50%;
     transform: translateX(-50%);
-    color: rgba(255,255,255,.12);
-    font-size: 10px; letter-spacing: 3px;
+    color: rgba(200,150,62,0.85);
+    font-size: 12px; letter-spacing: 3px;
     pointer-events: none; z-index: 5;
     transition: opacity 1s ease;
+    font-weight: 700;
   }
 </style>
 </head>
@@ -74,8 +105,11 @@
 <canvas id="c"></canvas>
 
 <div id="hud">
-  <span id="lv">LEVEL 01</span>
-  <button id="rb">[ R ]  RESTART</button>
+  <div class="hud-left">
+    <a href="/" class="home-link">&larr; MAIN SITE</a>
+    <span id="lv">LEVEL 01</span>
+  </div>
+  <button id="rb">RESTART</button>
 </div>
 
 <div id="wo">
@@ -83,20 +117,16 @@
   <div id="ws">LOADING NEXT LEVEL…</div>
 </div>
 
-<div id="sig">REFRACT</div>
+<div id="sig">REFRACT // LASER OPTICS HUB</div>
 <div id="hint">CLICK MIRRORS TO ROTATE</div>
 
 <script>
 'use strict';
 
-// ═══════════════════════════════════════════
-//  CONSTANTS
-// ═══════════════════════════════════════════
-
 const CELL     = 72;
-const LASER_C  = '#00ffee';
-const WIN_C    = '#00ffaa';
-const MIRROR_C = '#3d8cff';
+const LASER_C  = '#c8963e';
+const WIN_C    = '#3f2200';
+const MIRROR_C = '#a08162';
 const PI4      = Math.PI / 4;
 const LERP     = 0.14;
 
@@ -107,77 +137,60 @@ const DIR_VEC = {
   down: [  0,  1 ]
 };
 
-// rot 0 = "/" mirror  |  rot 1 = "\" mirror
 const BOUNCE = {
   0: { right:'up',   left:'down',  up:'right', down:'left'  },
   1: { right:'down', left:'up',    up:'left',  down:'right' }
 };
 
-// Canvas rotation angle that makes horizontal line look like / or \
-// rotate(-PI/4) → /   |   rotate(+PI/4) → \
 function mRad(rot) { return rot === 0 ? -PI4 : PI4; }
-
-// ═══════════════════════════════════════════
-//  LEVELS
-//  rot: 0="/", 1="\"   (starting orientation the player must fix)
-// ═══════════════════════════════════════════
 
 const LEVELS = [
   {
-    // 1 — one mirror, figure out which way
     cols:8, rows:6,
     emitter:{ x:1, y:3, dir:'right' },
     mirrors:[ {x:5, y:3, rot:1} ],
     target:{ x:5, y:1 }
   },
   {
-    // 2 — two bounces, same column
     cols:9, rows:7,
     emitter:{ x:1, y:5, dir:'right' },
     mirrors:[ {x:4,y:5,rot:1}, {x:4,y:2,rot:1} ],
     target:{ x:7, y:2 }
   },
   {
-    // 3 — Z-path, three rotations
     cols:9, rows:8,
     emitter:{ x:1, y:5, dir:'right' },
     mirrors:[ {x:3,y:5,rot:1}, {x:3,y:2,rot:1}, {x:7,y:2,rot:0} ],
     target:{ x:7, y:5 }
   },
   {
-    // 4 — decoys, two useful mirrors hidden among four
     cols:10, rows:8,
     emitter:{ x:1, y:4, dir:'right' },
     mirrors:[
-      {x:4,y:4,rot:1}, {x:4,y:1,rot:1},   // solution mirrors
-      {x:7,y:4,rot:1}, {x:7,y:6,rot:0}    // decoys
+      {x:4,y:4,rot:1}, {x:4,y:1,rot:1},
+      {x:7,y:4,rot:1}, {x:7,y:6,rot:0}
     ],
     target:{ x:8, y:1 }
   },
   {
-    // 5 — spiral, four bounces + one decoy
     cols:9, rows:8,
     emitter:{ x:4, y:0, dir:'down' },
     mirrors:[
-      {x:4,y:6,rot:1}, {x:1,y:6,rot:0},   // needs / then \
-      {x:1,y:3,rot:1}, {x:7,y:3,rot:1},   // needs / ; already \ ✓
-      {x:6,y:6,rot:0}                       // decoy
+      {x:4,y:6,rot:1}, {x:1,y:6,rot:0},
+      {x:1,y:3,rot:1}, {x:7,y:3,rot:1},
+      {x:6,y:6,rot:0}
     ],
     target:{ x:7, y:6 }
   }
 ];
-
-// ═══════════════════════════════════════════
-//  STATE
-// ═══════════════════════════════════════════
 
 const canvas   = document.getElementById('c');
 const ctx      = canvas.getContext('2d');
 
 let W, H, offX, offY;
 let lvIdx      = 0;
-let mirrors    = [];     // runtime objects with vis/tgt angles
-let laserPts   = [];     // [{gx,gy}]
+let mirrors    = [];
+let laserPts   = [];
 let laserHit   = false;
 let won        = false;
 let winTimer   = null;
@@ -188,10 +201,6 @@ let dirty      = true;
 let lastTime   = null;
 let hintAlpha  = 1;
 let hintTimer  = null;
-
-// ═══════════════════════════════════════════
-//  LEVEL LOADER
-// ═══════════════════════════════════════════
 
 function loadLevel(idx) {
   lvIdx = ((idx % LEVELS.length) + LEVELS.length) % LEVELS.length;
@@ -215,10 +224,6 @@ function loadLevel(idx) {
   castLaser();
   dirty = true;
 }
-
-// ═══════════════════════════════════════════
-//  RAYCASTING
-// ═══════════════════════════════════════════
 
 function castLaser() {
   const lv = LEVELS[lvIdx];
@@ -264,10 +269,6 @@ function onWin() {
   }, 340);
 }
 
-// ═══════════════════════════════════════════
-//  COORDINATE UTILS
-// ═══════════════════════════════════════════
-
 function gp(gx, gy) {
   return [offX + gx * CELL + CELL * 0.5, offY + gy * CELL + CELL * 0.5];
 }
@@ -279,19 +280,14 @@ function refreshDims() {
   offY = Math.round((H - lv.rows * CELL) * 0.5);
 }
 
-// ═══════════════════════════════════════════
-//  DRAW — BACKGROUND
-// ═══════════════════════════════════════════
-
 function drawBG() {
   ctx.save();
-  ctx.fillStyle = '#060b14';
+  ctx.fillStyle = '#fff2e7';
   ctx.fillRect(0, 0, W, H);
 
   const lv = LEVELS[lvIdx];
 
-  // Very faint grid lines
-  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.strokeStyle = 'rgba(63,34,0,0.06)';
   ctx.lineWidth = 0.5;
   for (let c = 0; c <= lv.cols; c++) {
     ctx.beginPath();
@@ -306,8 +302,7 @@ function drawBG() {
     ctx.stroke();
   }
 
-  // Grid intersection dots
-  ctx.fillStyle = 'rgba(255,255,255,0.08)';
+  ctx.fillStyle = 'rgba(63,34,0,0.12)';
   for (let c = 0; c <= lv.cols; c++) {
     for (let r = 0; r <= lv.rows; r++) {
       ctx.beginPath();
@@ -318,21 +313,16 @@ function drawBG() {
   ctx.restore();
 }
 
-// ═══════════════════════════════════════════
-//  DRAW — LASER
-// ═══════════════════════════════════════════
-
 function drawLaser() {
   if (laserPts.length < 2) return;
   ctx.save();
   const col = laserHit ? WIN_C : LASER_C;
   const pts = laserPts.map(p => gp(p.gx, p.gy));
 
-  // Multi-layer glow effect
   const layers = [
-    { w: 28, a: 0.03 },
-    { w: 12, a: 0.10 },
-    { w:  4, a: 0.55 },
+    { w: 24, a: 0.04 },
+    { w: 10, a: 0.12 },
+    { w:  4, a: 0.65 },
     { w:  1.5, a: 1.0 }
   ];
 
@@ -349,7 +339,6 @@ function drawLaser() {
   }
   ctx.globalAlpha = 1;
 
-  // Radial glow node at each bounce point
   for (let i = 1; i < pts.length - 1; i++) {
     const [bx, by] = pts[i];
     const g = ctx.createRadialGradient(bx, by, 0, bx, by, 18);
@@ -365,10 +354,6 @@ function drawLaser() {
   ctx.restore();
 }
 
-// ═══════════════════════════════════════════
-//  DRAW — EMITTER
-// ═══════════════════════════════════════════
-
 function drawEmitter() {
   const lv = LEVELS[lvIdx];
   const [px, py] = gp(lv.emitter.x, lv.emitter.y);
@@ -376,17 +361,15 @@ function drawEmitter() {
   ctx.translate(px, py);
   const s = 15;
 
-  // Body box
   rrect(-s, -s, s*2, s*2, 4);
-  ctx.fillStyle = '#0d1520';
+  ctx.fillStyle = '#fff9f4';
   ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,0.13)';
+  ctx.strokeStyle = 'rgba(63,34,0,0.2)';
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  // Corner bracket accents
   const b = 6;
-  ctx.strokeStyle = LASER_C + '44';
+  ctx.strokeStyle = LASER_C;
   ctx.lineWidth = 1.5;
   [ [-s,-s,1,1], [s,-s,-1,1], [s,s,-1,-1], [-s,s,1,-1] ].forEach(([x,y,sx,sy]) => {
     ctx.beginPath();
@@ -396,7 +379,6 @@ function drawEmitter() {
     ctx.stroke();
   });
 
-  // Nozzle line pointing in fire direction
   const [dx, dy] = DIR_VEC[lv.emitter.dir];
   ctx.strokeStyle = LASER_C;
   ctx.lineWidth = 1.5;
@@ -407,7 +389,6 @@ function drawEmitter() {
   ctx.stroke();
   ctx.globalAlpha = 1;
 
-  // Nozzle tip glow dot
   const tx = dx * (s + 13), ty = dy * (s + 13);
   const ng = ctx.createRadialGradient(tx, ty, 0, tx, ty, 9);
   ng.addColorStop(0, LASER_C + 'bb');
@@ -420,25 +401,20 @@ function drawEmitter() {
   ctx.restore();
 }
 
-// ═══════════════════════════════════════════
-//  DRAW — MIRRORS
-// ═══════════════════════════════════════════
-
 function drawMirrors() {
   for (const m of mirrors) {
     const [px, py] = gp(m.gx, m.gy);
     const isHov = m === hoveredM && !won;
-    const col   = isHov ? '#77bbff' : (m.lit ? '#55aaee' : MIRROR_C);
+    const col   = isHov ? '#c8963e' : (m.lit ? '#3f2200' : MIRROR_C);
     const len   = 21;
 
     ctx.save();
     ctx.translate(px, py);
     ctx.rotate(m.vis);
 
-    // Hover glow bg
     if (isHov) {
       const hg = ctx.createRadialGradient(0, 0, 0, 0, 0, 30);
-      hg.addColorStop(0, 'rgba(68,140,255,0.09)');
+      hg.addColorStop(0, 'rgba(200,150,62,0.2)');
       hg.addColorStop(1, 'transparent');
       ctx.beginPath();
       ctx.arc(0, 0, 30, 0, Math.PI * 2);
@@ -446,8 +422,7 @@ function drawMirrors() {
       ctx.fill();
     }
 
-    // Backing hatch (non-reflective side indicator)
-    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.strokeStyle = 'rgba(63,34,0,0.15)';
     ctx.lineWidth = 1;
     for (let t = -len + 5; t <= len; t += 9) {
       ctx.beginPath();
@@ -456,8 +431,7 @@ function drawMirrors() {
       ctx.stroke();
     }
 
-    // Main surface line with glow
-    ctx.shadowBlur  = isHov ? 20 : (m.lit ? 14 : 7);
+    ctx.shadowBlur  = isHov ? 15 : (m.lit ? 10 : 4);
     ctx.shadowColor = col;
     ctx.strokeStyle = col;
     ctx.lineWidth   = isHov ? 3 : 2.5;
@@ -468,7 +442,6 @@ function drawMirrors() {
     ctx.stroke();
     ctx.shadowBlur = 0;
 
-    // End cap dots
     ctx.fillStyle  = col;
     ctx.globalAlpha = 0.9;
     ctx.beginPath(); ctx.arc(-len, 0, 3.5, 0, Math.PI * 2); ctx.fill();
@@ -479,47 +452,35 @@ function drawMirrors() {
   }
 }
 
-// ═══════════════════════════════════════════
-//  DRAW — TARGET
-// ═══════════════════════════════════════════
-
 function drawTarget() {
   const lv = LEVELS[lvIdx];
   const [px, py] = gp(lv.target.x, lv.target.y);
-  const col   = laserHit ? WIN_C : 'rgba(0,255,204,0.55)';
-  const col2  = laserHit ? WIN_C : 'rgba(0,255,204,0.28)';
+  const col   = laserHit ? WIN_C : 'rgba(200,150,62,0.7)';
+  const col2  = laserHit ? WIN_C : 'rgba(200,150,62,0.35)';
   const R = 17;
 
   ctx.save();
   ctx.translate(px, py);
-  ctx.rotate(Math.PI / 10); // slight tilt for style
+  ctx.rotate(Math.PI / 10);
 
   if (laserHit) {
-    // Filled glow burst
     ctx.beginPath(); poly(0, 0, R + 8, 6);
     ctx.fillStyle = WIN_C + '1a'; ctx.fill();
-    ctx.shadowBlur = 30; ctx.shadowColor = WIN_C;
+    ctx.shadowBlur = 25; ctx.shadowColor = WIN_C;
   }
 
-  // Outer hexagon
   ctx.beginPath(); poly(0, 0, R, 6);
   ctx.strokeStyle = col; ctx.lineWidth = 2; ctx.stroke();
   ctx.shadowBlur = 0;
 
-  // Inner hexagon
   ctx.beginPath(); poly(0, 0, R * 0.5, 6);
   ctx.strokeStyle = col2; ctx.lineWidth = 1.5; ctx.stroke();
 
-  // Center dot
   ctx.beginPath(); ctx.arc(0, 0, 2.5, 0, Math.PI * 2);
   ctx.fillStyle = col; ctx.fill();
 
   ctx.restore();
 }
-
-// ═══════════════════════════════════════════
-//  DRAW — PARTICLES
-// ═══════════════════════════════════════════
 
 function drawParticles(dt) {
   ctx.save();
@@ -529,7 +490,7 @@ function drawParticles(dt) {
     if (p.life <= 0) { particles.splice(i, 1); continue; }
     p.x  += p.vx * dt;
     p.y  += p.vy * dt;
-    p.vy += 100 * dt;  // gravity
+    p.vy += 100 * dt;
     const a = (p.life / p.maxLife) * 0.9;
     ctx.globalAlpha = a;
     ctx.fillStyle   = WIN_C;
@@ -556,10 +517,6 @@ function spawnParticles() {
   }
 }
 
-// ═══════════════════════════════════════════
-//  SHAPE HELPERS
-// ═══════════════════════════════════════════
-
 function poly(cx, cy, r, n) {
   for (let i = 0; i < n; i++) {
     const a = (i / n) * Math.PI * 2;
@@ -579,16 +536,11 @@ function rrect(x, y, w, h, r) {
   ctx.closePath();
 }
 
-// ═══════════════════════════════════════════
-//  MAIN LOOP
-// ═══════════════════════════════════════════
-
 function frame(ts) {
   requestAnimationFrame(frame);
   const dt = lastTime ? Math.min((ts - lastTime) / 1000, 0.08) : 0;
   lastTime = ts;
 
-  // Animate mirror rotations
   for (const m of mirrors) {
     const d = m.tgt - m.vis;
     if (Math.abs(d) > 0.0007) { m.vis += d * LERP; dirty = true; }
@@ -609,17 +561,12 @@ function frame(ts) {
   drawMirrors();
   drawParticles(dt);
 
-  // Win screen flash (green tint)
   if (flashAlpha > 0) {
-    ctx.fillStyle = `rgba(0,255,170,${flashAlpha.toFixed(3)})`;
+    ctx.fillStyle = `rgba(200,150,62,${flashAlpha.toFixed(3)})`;
     ctx.fillRect(0, 0, W, H);
     flashAlpha = Math.max(0, flashAlpha - dt * 1.4);
   }
 }
-
-// ═══════════════════════════════════════════
-//  INPUT
-// ═══════════════════════════════════════════
 
 function getMirrorAt(mx, my) {
   for (const m of mirrors) {
@@ -634,7 +581,6 @@ function doClick(mx, my) {
   const m = getMirrorAt(mx, my);
   if (!m) return;
 
-  // Dismiss hint on first click
   if (hintTimer === null) {
     hintTimer = 0;
     const h = document.getElementById('hint');
@@ -685,10 +631,6 @@ function doRestart() {
   loadLevel(lvIdx);
 }
 
-// ═══════════════════════════════════════════
-//  RESIZE
-// ═══════════════════════════════════════════
-
 function onResize() {
   canvas.width  = window.innerWidth;
   canvas.height = window.innerHeight;
@@ -696,10 +638,6 @@ function onResize() {
 }
 window.addEventListener('resize', onResize);
 onResize();
-
-// ═══════════════════════════════════════════
-//  AUDIO  (Web Audio API — no files needed)
-// ═══════════════════════════════════════════
 
 let AC = null;
 function ac() {
@@ -717,30 +655,25 @@ function playClick() {
     o.frequency.exponentialRampToValueAtTime(330, t + 0.065);
     g.gain.setValueAtTime(0.10, t);
     g.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
-    o.start(t); o.stop(t + 0.09);
+    o.start(t); o.stop(t + 0.08);
   } catch(_) {}
 }
 
 function playWin() {
   try {
     const a = ac();
-    // Ascending C major arpeggio  C5 E5 G5 C6
     [523, 659, 784, 1047].forEach((f, i) => {
       const o = a.createOscillator(), g = a.createGain();
       o.connect(g); g.connect(a.destination);
       o.type = 'sine'; o.frequency.value = f;
       const t = a.currentTime + i * 0.10;
-      g.gain.setValueAtTime(0, t);
+      g.gain.setValueAtTime(0);
       g.gain.linearRampToValueAtTime(0.12, t + 0.025);
       g.gain.exponentialRampToValueAtTime(0.001, t + 0.55);
       o.start(t); o.stop(t + 0.6);
     });
   } catch(_) {}
 }
-
-// ═══════════════════════════════════════════
-//  BOOT
-// ═══════════════════════════════════════════
 
 loadLevel(0);
 requestAnimationFrame(frame);
