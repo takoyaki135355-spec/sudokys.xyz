@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <link rel="icon" type="image/png" href="/admin/assets/favicon.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>tako | sudokys.xyz</title>
+<title>Prince</title>
 <meta name="description" content="Personal portfolio, security research hub, web tools, & CTF playground of Tako (takoyaki135355).">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -215,6 +215,7 @@ main {
     padding: 3rem 2.5rem;
     box-shadow: 0 15px 40px rgba(63, 34, 0, 0.06);
     margin-bottom: 3.5rem;
+    position: relative;
 }
 
 .hero-status {
@@ -486,7 +487,7 @@ footer {
         <div id="prince-text-wrapper">
             <span id="prince-typed-text"></span><span id="prince-cursor">|</span>
         </div>
-        <div id="scroll-prompt">scroll down for animation</div>
+        <div id="scroll-prompt">scroll down</div>
     </div>
 </div>
 
@@ -506,63 +507,115 @@ footer {
 
 <main>
 
-    <!-- Editorial Hero Showcase -->
-    <section class="hero-showcase">
-        <div class="hero-status">
-            <span class="logo-dot"></span>
-            <span>Security Research & CTF Hunting</span>
+    <!-- Editorial Hero Showcase with Skeleton Loader Wrapper -->
+    <div class="skeleton-wrapper hero-skeleton-wrapper" id="hero-wrapper">
+        <div class="skeleton-overlay">
+            <div class="skeleton skeleton-badge" style="width: 140px; margin-bottom: 1.5rem;"></div>
+            <div class="skeleton skeleton-title" style="width: 90%; height: 2.2rem;"></div>
+            <div class="skeleton skeleton-title" style="width: 60%; height: 2.2rem; margin-bottom: 1.5rem;"></div>
+            <div class="skeleton skeleton-text skeleton-line-full"></div>
+            <div class="skeleton skeleton-text skeleton-line-med" style="margin-bottom: 2rem;"></div>
+            <div style="display: flex; gap: 0.75rem;">
+                <div class="skeleton skeleton-badge" style="width: 110px;"></div>
+                <div class="skeleton skeleton-badge" style="width: 120px;"></div>
+                <div class="skeleton skeleton-badge" style="width: 130px;"></div>
+            </div>
         </div>
 
-        <h1 class="hero-headline">
-            Tako &mdash; Security Researcher, Ethical Hacker & Software Engineer
-        </h1>
+        <section class="hero-showcase real-content">
+            <div class="hero-status">
+                <span class="logo-dot"></span>
+                <span>Security Research & CTF Hunting</span>
+            </div>
 
-        <p class="hero-bio">
-            Exploring security surfaces, reversing low-level binaries, and building distraction-free web tools. Dedicated to analyzing complex systems and minimalist architecture.
-        </p>
+            <h1 class="hero-headline">
+                Tako &mdash; Security Researcher, Ethical Hacker & Software Engineer
+            </h1>
 
-        <div class="hero-tags">
-            <span class="tag">CTF Competitor</span>
-            <span class="tag">OSINT Specialist</span>
-            <span class="tag">Offensive Security</span>
-            <span class="tag">Binary Reversing</span>
-        </div>
-    </section>
+            <p class="hero-bio">
+                Exploring security surfaces, reversing low-level binaries, and building distraction-free web tools. Dedicated to analyzing complex systems and minimalist architecture.
+            </p>
+
+            <div class="hero-tags">
+                <span class="tag">CTF Player</span>
+                <span class="tag">OSINT</span>
+                <span class="tag">Machine Learning Algorithm Training</span>
+                <span class="tag">Binary Reversing</span>
+		<span class="tag">Web Security</span>
+		<span class="tag">Malware Dev</span>
+
+            </div>
+        </section>
+    </div>
 
     <!-- About Section -->
     <section class="section" id="about">
-        <h2 class="section-title">About Tako</h2>
+        <h2 class="section-title">About Me</h2>
         <div class="grid">
-            <div class="card">
-                <div class="card-header">
-                    <h2>Profile Details</h2>
-                    <span class="card-badge">PROFILE</span>
+
+            <div class="skeleton-wrapper card-skeleton" id="card-skel-1">
+                <div class="skeleton-overlay">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div class="skeleton skeleton-title" style="width: 50%;"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton skeleton-text skeleton-line-full"></div>
+                    <div class="skeleton skeleton-text skeleton-line-full"></div>
+                    <div class="skeleton skeleton-text skeleton-line-med" style="margin-bottom: 2rem;"></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: auto;">
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 30%;"></div>
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 35%;"></div>
+                    </div>
                 </div>
-                <p>
-                    Hi, I’m Tako — a security researcher & developer based in Malaysia. When I'm not playing CTFs, I'm analyzing binaries, conducting OSINT investigations, or creating custom web applications.
-                </p>
-                <div class="card-footer">
-                    <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: 600;">Location: MY</span>
-                    <a href="contactme" class="card-link">Get in touch &rarr;</a>
+
+                <div class="card real-content">
+                    <div class="card-header">
+                        <h2>Profile Details</h2>
+                        <span class="card-badge">PROFILE</span>
+                    </div>
+                    <p>
+                        Hi, I’m Arham; a security researcher, developer, and CTF player. My team and I competitively play CTF. By myself I conduct OSINT investigations, test web application security, find binary vulnerabilities and develop malware.
+                    </p>
+                    <div class="card-footer">
+                        <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: 600;">Location: MY</span>
+                        <a href="contactme" class="card-link">Get in touch &rarr;</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>Current Focus</h2>
-                    <span class="card-badge">FOCUS</span>
+            <div class="skeleton-wrapper card-skeleton" id="card-skel-2">
+                <div class="skeleton-overlay">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div class="skeleton skeleton-title" style="width: 55%;"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton skeleton-text skeleton-line-full"></div>
+                    <div class="skeleton skeleton-text skeleton-line-med"></div>
+                    <div class="skeleton skeleton-text skeleton-line-full" style="margin-bottom: 2rem;"></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: auto;">
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 30%;"></div>
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 35%;"></div>
+                    </div>
                 </div>
-                <ul class="focus-list">
-                    <li>CTF Competitions & Writeups</li>
-                    <li>OSINT Case Investigations</li>
-                    <li>Offensive Cybersecurity</li>
-                    <li>Low-level Binary Reversing</li>
-                </ul>
-                <div class="card-footer">
-                    <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: 600;">Mode: Active</span>
-                    <a href="#apps" class="card-link">View Projects &rarr;</a>
+
+                <div class="card real-content">
+                    <div class="card-header">
+                        <h2>Current Focus</h2>
+                        <span class="card-badge">FOCUS</span>
+                    </div>
+                    <ul class="focus-list">
+                        <li>CTF Competitions & Writeups</li>
+                        <li>OSINT Case Investigations</li>
+                        <li>Offensive Cybersecurity</li>
+                        <li>Low-level Binary Reversing</li>
+                    </ul>
+                    <div class="card-footer">
+                        <span style="color: var(--text-dim); font-size: 0.85rem; font-weight: 600;">Mode: Active</span>
+                        <a href="#apps" class="card-link">View Projects &rarr;</a>
+                    </div>
                 </div>
             </div>
+
         </div>
     </section>
 
@@ -570,47 +623,94 @@ footer {
     <section class="section" id="apps">
         <h2 class="section-title">Web Applications & Projects</h2>
         <div class="grid" id="projects">
-            <div class="card">
-                <div class="card-header">
-                    <h2>REFRACT</h2>
-                    <span class="card-badge">CANVAS GAME</span>
+
+            <div class="skeleton-wrapper card-skeleton" id="app-skel-1">
+                <div class="skeleton-overlay">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div class="skeleton skeleton-title" style="width: 45%;"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton skeleton-text skeleton-line-full"></div>
+                    <div class="skeleton skeleton-text skeleton-line-med" style="margin-bottom: 2rem;"></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: auto;">
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 30%;"></div>
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 35%;"></div>
+                    </div>
                 </div>
-                <p>
-                    An interactive HTML5 canvas optics & laser reflection puzzle game featuring custom raycasting physics and Web Audio sound synthesis.
-                </p>
-                <div class="card-footer">
-                    <span style="color: var(--accent); font-size: 0.85rem; font-weight: 600;">Optics Engine</span>
-                    <a href="myscienceproject" class="card-link">Launch Game &rarr;</a>
+
+                <div class="card real-content">
+                    <div class="card-header">
+                        <h2>REFRACT</h2>
+                        <span class="card-badge">CANVAS GAME</span>
+                    </div>
+                    <p>
+                        An interactive HTML5 canvas optics & laser reflection puzzle game featuring custom raycasting physics and Web Audio sound synthesis I made for a science project on light rays.
+                    </p>
+                    <div class="card-footer">
+                        <span style="color: var(--accent); font-size: 0.85rem; font-weight: 600;">Optics Engine</span>
+                        <a href="myscienceproject" class="card-link">Launch Game &rarr;</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>.Txt Editor</h2>
-                    <span class="card-badge">WEB APP</span>
+            <div class="skeleton-wrapper card-skeleton" id="app-skel-2">
+                <div class="skeleton-overlay">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div class="skeleton skeleton-title" style="width: 50%;"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton skeleton-text skeleton-line-full"></div>
+                    <div class="skeleton skeleton-text skeleton-line-med" style="margin-bottom: 2rem;"></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: auto;">
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 30%;"></div>
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 35%;"></div>
+                    </div>
                 </div>
-                <p>
-                    Distraction-free, minimal browser notepad with Catppuccin theme toggles, Python code editor mode, and instant auto-save.
-                </p>
-                <div class="card-footer">
-                    <span style="color: var(--accent); font-size: 0.85rem; font-weight: 600;">Text & Code</span>
-                    <a href="text" class="card-link">Open Notepad &rarr;</a>
+
+                <div class="card real-content">
+                    <div class="card-header">
+                        <h2>.Txt Editor</h2>
+                        <span class="card-badge">WEB APP</span>
+                    </div>
+                    <p>
+                        Distraction-free, minimal browser notepad with Catppuccin theme toggles, Python code editor mode, and near instant autosave.
+                    </p>
+                    <div class="card-footer">
+                        <span style="color: var(--accent); font-size: 0.85rem; font-weight: 600;">Text & Code</span>
+                        <a href="text" class="card-link">Open Notepad &rarr;</a>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-header">
-                    <h2>CTF Vault</h2>
-                    <span class="card-badge">CHALLENGE</span>
+            <div class="skeleton-wrapper card-skeleton" id="app-skel-3">
+                <div class="skeleton-overlay">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 1rem;">
+                        <div class="skeleton skeleton-title" style="width: 40%;"></div>
+                        <div class="skeleton skeleton-badge"></div>
+                    </div>
+                    <div class="skeleton skeleton-text skeleton-line-full"></div>
+                    <div class="skeleton skeleton-text skeleton-line-med" style="margin-bottom: 2rem;"></div>
+                    <div style="display: flex; justify-content: space-between; margin-top: auto;">
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 30%;"></div>
+                        <div class="skeleton skeleton-text skeleton-line-short" style="width: 35%;"></div>
+                    </div>
                 </div>
-                <p>
-                    Hidden security challenges, secret endpoints, and puzzle hints scattered across the domain for curious hunters.
-                </p>
-                <div class="card-footer">
-                    <span style="color: var(--accent); font-size: 0.85rem; font-weight: 600;">Reconnaissance</span>
-                    <a href="robots.txt" class="card-link">Inspect Robots &rarr;</a>
+
+                <div class="card real-content">
+                    <div class="card-header">
+                        <h2>CTF Vault</h2>
+                        <span class="card-badge">CHALLENGE</span>
+                    </div>
+                    <p>
+                        Hidden security challenges, secret endpoints, and puzzle hints scattered across the domain for curious hunters.
+                    </p>
+                    <div class="card-footer">
+                        <span style="color: var(--accent); font-size: 0.85rem; font-weight: 600;">Reconnaissance</span>
+                        <a href="robots.txt" class="card-link">Inspect Robots &rarr;</a>
+                    </div>
                 </div>
             </div>
+
         </div>
     </section>
 
@@ -623,13 +723,32 @@ footer {
             <a href="contactme">Contact</a> &middot;
             <a href="robots.txt">robots.txt</a> &middot;
             <a href="contactme/publickey.asc">PGP Key</a> &middot;
-            <a href="admin">Admin Portal</a>
         </div>
-        <p>&copy; 2026 tako &middot; built without unnecessary frameworks &middot; minimal surface area</p>
+        <p> Prince &middot; sudokys &middot; Tako &middot; Arham</p>
     </div>
 </footer>
 
 <script>
+// Force page to always open at top of animation on load
+if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+}
+if (!window.location.hash) {
+    window.scrollTo(0, 0);
+}
+
+// Initialize Skeleton Loader Transition on Load
+window.addEventListener('DOMContentLoaded', () => {
+    if (!window.location.hash) {
+        window.scrollTo(0, 0);
+    }
+    setTimeout(() => {
+        document.querySelectorAll('.skeleton-wrapper').forEach(wrapper => {
+            wrapper.classList.add('loaded');
+        });
+    }, 450);
+});
+
 // ═════════════════════════════════════════════════════════════
 //  SCROLL HERO INTRO ANIMATION ("Prince" Typing & Shrink)
 // ═════════════════════════════════════════════════════════════
@@ -726,8 +845,18 @@ window.addEventListener('scroll', () => {
     }
 }, { passive: true });
 
-// Initial check on load
-handleHeroScrollAnimation();
+// Initial check on load - ensure page starts at top (0,0)
+const resetScrollToTop = () => {
+    if (!window.location.hash) {
+        window.scrollTo(0, 0);
+    }
+    handleHeroScrollAnimation();
+};
+
+window.addEventListener('load', resetScrollToTop);
+window.addEventListener('pageshow', resetScrollToTop);
+
+resetScrollToTop();
 setTimeout(() => {
     updateScrollPromptVisibility(true);
 }, 400);
