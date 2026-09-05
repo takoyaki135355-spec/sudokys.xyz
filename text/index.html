@@ -23,12 +23,12 @@
 }
 body.dark {
   /* Catppuccin Mocha (dark) */
-  --bg-color: #030508;
-  --card-bg: #080d16;
+  --bg-color: #1e1e2e;
+  --card-bg: #181825;
   --text-color: #cdd6f4;
-  --muted-color: #6c7086;
-  --border-color: rgba(0, 255, 163, 0.14);
-  --accent-color: #00ffa3;
+  --muted-color: #a6adc8;
+  --border-color: #313244;
+  --accent-color: #a6e3a1;
 }
 body.code-mode {
   --font-family: 'JetBrains Mono', monospace;
@@ -123,7 +123,7 @@ header {
 }
 .mode-btn.active {
   background: var(--accent-color);
-  color: #030508;
+  color: #11111b;
   font-weight: 700;
 }
 .editor-container {
@@ -204,11 +204,11 @@ body.code-mode .CodeMirror {
 }
 .CodeMirror-hint-active {
   background: var(--accent-color) !important;
-  color: #030508 !important;
+  color: #11111b !important;
   font-weight: 600;
 }
 body.dark .CodeMirror-hint-active {
-  color: #030508 !important;
+  color: #11111b !important;
 }
 /* Theme Integration Overrides */
 body.dark .CodeMirror-gutters {
@@ -222,7 +222,7 @@ body.dark .CodeMirror-cursor {
   border-left: 2px solid var(--accent-color) !important;
 }
 body.dark .CodeMirror-selected {
-  background: rgba(0, 255, 163, 0.18) !important;
+  background: rgba(88, 91, 112, 0.45) !important;
 }
 /* Syntax Highlighting — Catppuccin Mocha */
 body.dark .cm-s-dracula.CodeMirror { background: transparent !important; color: #cdd6f4 !important; }
@@ -230,13 +230,16 @@ body.dark .cm-s-dracula .cm-variable { color: #cdd6f4 !important; }
 body.dark .cm-s-dracula .cm-builtin { color: #89dceb !important; font-weight: 500; }
 body.dark .cm-s-dracula .cm-keyword { color: #cba6f7 !important; font-weight: 600; }
 body.dark .cm-s-dracula .cm-def { color: #89b4fa !important; }
-body.dark .cm-s-dracula .cm-string { color: #00ffa3 !important; }
+body.dark .cm-s-dracula .cm-string { color: #a6e3a1 !important; }
 body.dark .cm-s-dracula .cm-number { color: #fab387 !important; }
 body.dark .cm-s-dracula .cm-operator { color: #94e2d5 !important; }
 body.dark .cm-s-dracula .cm-comment { color: #6c7086 !important; font-style: italic; }
 body.dark .cm-s-dracula .cm-property { color: #74c7ec !important; }
 body.dark .cm-s-dracula .cm-atom { color: #fab387 !important; }
 body.dark .cm-s-dracula .cm-tag { color: #f38ba8 !important; }
+body.dark .cm-s-dracula .cm-meta { color: #f5c2e7 !important; font-weight: 600; }
+body.dark .cm-s-dracula .cm-type { color: #f9e2af !important; }
+body.dark .cm-s-dracula .cm-variable-2 { color: #f9e2af !important; }
 
 /* Syntax Highlighting — Catppuccin Latte */
 body:not(.dark) .cm-s-default.CodeMirror { background: transparent !important; color: #4c4f69 !important; }
@@ -252,6 +255,9 @@ body:not(.dark) .cm-s-default .cm-operator { color: #179299 !important; }
 body:not(.dark) .cm-s-default .cm-comment { color: #8c8fa1 !important; font-style: italic; }
 body:not(.dark) .cm-s-default .cm-property { color: #209fb5 !important; }
 body:not(.dark) .cm-s-default .cm-tag { color: #d20f39 !important; }
+body:not(.dark) .cm-s-default .cm-meta { color: #ea76cb !important; font-weight: 600; }
+body:not(.dark) .cm-s-default .cm-type { color: #df8e1d !important; }
+body:not(.dark) .cm-s-default .cm-variable-2 { color: #df8e1d !important; }
 
 footer {
   padding: 0.65rem 1.5rem;
@@ -281,6 +287,29 @@ footer {
 body.code-mode .code-indicator {
   display: inline;
 }
+.toast {
+  position: fixed;
+  bottom: 2.2rem;
+  right: 2rem;
+  background: var(--card-bg);
+  color: var(--text-color);
+  border: 1px solid var(--border-color);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.6rem 1.1rem;
+  border-radius: 6px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+  transform: translateY(80px);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 100;
+  pointer-events: none;
+}
+.toast.show {
+  transform: translateY(0);
+  opacity: 1;
+}
 @media (max-width: 640px) {
   header, footer {
     padding: 0.6rem 1rem;
@@ -296,6 +325,11 @@ body.code-mode .code-indicator {
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/clike/clike.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/ruby/ruby.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closebrackets.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchbrackets.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/show-hint.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/hint/anyword-hint.min.js"></script>
 </head>
@@ -313,8 +347,12 @@ body.code-mode .code-indicator {
     
     <select id="langSelector" class="lang-selector">
       <option value="python">Python</option>
+      <option value="json">JSON</option>
+      <option value="cpp">C++</option>
+      <option value="ruby">Ruby</option>
     </select>
     
+    <button class="btn" id="formatBtn" title="Format code (JSON/Python)">[FORMAT]</button>
     <button class="btn" id="themeBtn" title="Toggle theme">Light</button>
     <button class="btn" id="downloadBtn" title="Save file">[SAVE]</button>
     <button class="btn" id="clearBtn" title="Clear text">[CLEAR]</button>
@@ -324,6 +362,7 @@ body.code-mode .code-indicator {
   <div id="editor" contenteditable="true" spellcheck="true" data-placeholder="Start typing your notes here...">The quick brown fox jumps over the lazy dog.</div>
   <textarea id="codeEditor"></textarea>
 </div>
+<div class="toast" id="toast"></div>
 <footer>
   <div class="footer-left">
     <span class="pos-indicator" id="posIndicator">Ln 1, Col 1</span>
@@ -337,6 +376,7 @@ body.code-mode .code-indicator {
 const editor = document.getElementById('editor');
 const codeEditorTextarea = document.getElementById('codeEditor');
 const langSelector = document.getElementById('langSelector');
+const formatBtn = document.getElementById('formatBtn');
 const themeBtn = document.getElementById('themeBtn');
 const textModeBtn = document.getElementById('textModeBtn');
 const codeModeBtn = document.getElementById('codeModeBtn');
@@ -345,42 +385,193 @@ const clearBtn = document.getElementById('clearBtn');
 const posIndicator = document.getElementById('posIndicator');
 const charCount = document.getElementById('charCount');
 const wordCount = document.getElementById('wordCount');
+const toast = document.getElementById('toast');
+
 let isCodeMode = false;
 let isDark = true;
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2200);
+}
 
 const cm = CodeMirror.fromTextArea(codeEditorTextarea, {
   lineNumbers: true,
   mode: 'python',
   theme: 'dracula',
-  extraKeys: {"Ctrl-Space": "autocomplete"}
-});
-cm.on("inputRead", function(instance, change) {
-  if (change.text[0].match(/\w/)) {
-    cm.showHint({hint: CodeMirror.hint.anyword, completeSingle: false});
+  autoCloseBrackets: true,
+  matchBrackets: true,
+  extraKeys: {
+    "Ctrl-Space": "autocomplete"
   }
 });
+
+function applyLanguage(lang) {
+  if (lang === 'json') {
+    cm.setOption('mode', { name: 'javascript', json: true });
+  } else if (lang === 'cpp') {
+    cm.setOption('mode', 'text/x-c++src');
+  } else {
+    cm.setOption('mode', 'python');
+  }
+  localStorage.setItem('tako_txt_lang', lang);
+}
+
+langSelector.addEventListener('change', () => {
+  applyLanguage(langSelector.value);
+  showToast(`Language: ${langSelector.value.toUpperCase()}`);
+});
+
+cm.on("inputRead", function(instance, change) {
+  if (change.text[0].match(/[\w"#<.:]/)) {
+    cm.showHint({
+      hint: function(editor, options) {
+        const cur = editor.getCursor();
+        const token = editor.getTokenAt(cur);
+        const mode = editor.getOption('mode');
+        const modeName = typeof mode === 'object' ? mode.name : mode;
+
+        if (modeName === 'text/x-c++src' || mode === 'text/x-c++src' || langSelector.value === 'cpp') {
+          const cppKeywords = [
+            '#include', '#define', '#pragma', '#ifdef', '#ifndef', '#endif',
+            'int', 'void', 'double', 'float', 'char', 'bool', 'auto', 'const', 'constexpr',
+            'class', 'struct', 'public', 'private', 'protected', 'return', 'using', 'namespace',
+            'std::cout', 'std::cin', 'std::endl', 'std::string', 'std::vector', 'std::map',
+            'std::unordered_map', 'std::shared_ptr', 'std::unique_ptr', 'std::make_shared',
+            'std::make_unique', 'main', 'nullptr', 'true', 'false', 'template', 'typename',
+            'virtual', 'override', 'size_t', 'uint32_t', 'int64_t', 'include', 'string', 'vector'
+          ];
+          const word = token.string;
+          const list = cppKeywords.filter(k => k.toLowerCase().startsWith(word.toLowerCase()));
+
+          const anywordResult = CodeMirror.hint.anyword(editor, options);
+          if (anywordResult && anywordResult.list) {
+            anywordResult.list.forEach(w => {
+              if (!list.includes(w)) list.push(w);
+            });
+          }
+          return {
+            list: list.length > 0 ? list : (anywordResult ? anywordResult.list : []),
+            from: CodeMirror.Pos(cur.line, token.start),
+            to: CodeMirror.Pos(cur.line, token.end)
+          };
+        } else if ((typeof mode === 'object' && mode.json) || mode === 'json') {
+          const jsonKeywords = ['true', 'false', 'null'];
+          const word = token.string.replace(/^"/, '');
+          const list = jsonKeywords.filter(k => k.startsWith(word.toLowerCase()));
+          
+          const anywordResult = CodeMirror.hint.anyword(editor, options);
+          if (anywordResult && anywordResult.list) {
+            anywordResult.list.forEach(w => {
+              if (!list.includes(w)) list.push(w);
+            });
+          }
+          return {
+            list: list.length > 0 ? list : (anywordResult ? anywordResult.list : []),
+            from: CodeMirror.Pos(cur.line, token.start),
+            to: CodeMirror.Pos(cur.line, token.end)
+          };
+        }
+        return CodeMirror.hint.anyword(editor, options);
+      },
+      completeSingle: false
+    });
+  }
+});
+
+// Formatting handler for JSON, C++, and Python
+function formatCode() {
+  const lang = langSelector.value;
+  
+  if (!isCodeMode) {
+    const text = editor.innerText.trim();
+    if (!text) return;
+    if (lang === 'json') {
+      try {
+        const parsed = JSON.parse(text);
+        editor.innerText = JSON.stringify(parsed, null, 2);
+        localStorage.setItem('tako_txt_content', editor.innerText);
+        updateStats();
+        showToast('JSON Formatted!');
+      } catch(e) {
+        showToast('Invalid JSON: ' + e.message);
+      }
+    } else {
+      showToast('Switch to Code mode to format ' + lang.toUpperCase());
+    }
+    return;
+  }
+
+  const code = cm.getValue();
+  if (!code.trim()) return;
+
+  if (lang === 'json') {
+    try {
+      const parsed = JSON.parse(code);
+      const formatted = JSON.stringify(parsed, null, 2);
+      cm.setValue(formatted);
+      localStorage.setItem('tako_txt_content', formatted);
+      showToast('JSON Formatted!');
+    } catch (err) {
+      showToast('Invalid JSON: ' + err.message);
+    }
+  } else if (lang === 'cpp') {
+    const totalLines = cm.lineCount();
+    for (let i = 0; i < totalLines; i++) {
+      cm.indentLine(i, "smart");
+    }
+    const formatted = cm.getValue().split('\n').map(l => l.trimEnd()).join('\n');
+    cm.setValue(formatted);
+    localStorage.setItem('tako_txt_content', formatted);
+    showToast('C++ Formatted!');
+  } else {
+    // Python cleanup
+    const lines = code.split('\n').map(l => l.trimEnd());
+    const formatted = lines.join('\n');
+    cm.setValue(formatted);
+    localStorage.setItem('tako_txt_content', formatted);
+    showToast('Python Formatted!');
+  }
+}
+
+formatBtn.addEventListener('click', formatCode);
+
+// Restore saved language
+const savedLang = localStorage.getItem('tako_txt_lang');
+if (savedLang) {
+  langSelector.value = savedLang;
+  applyLanguage(savedLang);
+}
+
 cm.on('change', () => {
   if (!isCodeMode) return;
   const val = cm.getValue();
   localStorage.setItem('tako_txt_content', val);
   updateStats();
 });
+
 cm.on('cursorActivity', () => {
   if (!isCodeMode) return;
   const cursor = cm.getCursor();
   posIndicator.textContent = `Ln ${cursor.line + 1}, Col ${cursor.ch + 1}`;
 });
+
 const savedText = localStorage.getItem('tako_txt_content');
 if (savedText) {
   editor.innerText = savedText;
   cm.setValue(savedText);
 }
 updateStats();
+
 const savedMode = localStorage.getItem('tako_txt_mode');
 if (savedMode === 'code') setMode(true);
 
 textModeBtn.addEventListener('click', () => setMode(false));
 codeModeBtn.addEventListener('click', () => setMode(true));
+
 function setMode(code) {
   isCodeMode = code;
   document.body.classList.toggle('code-mode', isCodeMode);
@@ -403,6 +594,7 @@ function setMode(code) {
   localStorage.setItem('tako_txt_mode', isCodeMode ? 'code' : 'text');
   updateStats();
 }
+
 ['input', 'keyup', 'mouseup', 'click', 'focus'].forEach(evt => {
   editor.addEventListener(evt, () => {
     if (isCodeMode) return;
@@ -413,11 +605,13 @@ function setMode(code) {
     }
   });
 });
+
 document.addEventListener('selectionchange', () => {
   if (!isCodeMode && document.activeElement === editor) {
     updateCursorPos();
   }
 });
+
 function updateStats() {
   const text = isCodeMode ? cm.getValue() : editor.innerText.trim();
   const chars = text.length;
@@ -425,6 +619,7 @@ function updateStats() {
   charCount.textContent = `${chars} char${chars !== 1 ? 's' : ''}`;
   wordCount.textContent = `${words} word${words !== 1 ? 's' : ''}`;
 }
+
 function updateCursorPos() {
   const sel = window.getSelection();
   if (!sel.rangeCount) return;
@@ -436,22 +631,25 @@ function updateCursorPos() {
   const colNum = lines[lines.length - 1].length + 1;
   posIndicator.textContent = `Ln ${lineNum}, Col ${colNum}`;
 }
+
 function getTextBeforeRange(container, range) {
   const preRange = range.cloneRange();
   preRange.selectNodeContents(container);
   preRange.setEnd(range.startContainer, range.startOffset);
   return preRange.toString();
 }
+
 themeBtn.addEventListener('click', () => {
   isDark = !isDark;
   document.body.classList.toggle('dark', isDark);
   themeBtn.textContent = isDark ? 'Light' : 'Dark';
   cm.setOption('theme', isDark ? 'dracula' : 'default');
 });
+
 downloadBtn.addEventListener('click', () => {
   const text = isCodeMode ? cm.getValue() : editor.innerText;
   if (!text) return;
-  const ext = isCodeMode ? (langSelector.value === 'python' ? 'py' : 'txt') : 'txt';
+  const ext = isCodeMode ? (langSelector.value === 'cpp' ? 'cpp' : (langSelector.value === 'json' ? 'json' : (langSelector.value === 'python' ? 'py' : 'txt'))) : 'txt';
   const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -460,6 +658,7 @@ downloadBtn.addEventListener('click', () => {
   a.click();
   URL.revokeObjectURL(url);
 });
+
 clearBtn.addEventListener('click', () => {
   if (confirm('Clear editor content?')) {
     editor.innerText = '';
@@ -474,6 +673,7 @@ clearBtn.addEventListener('click', () => {
     }
   }
 });
+
 if (!isCodeMode) updateCursorPos();
 </script>
 </body>
